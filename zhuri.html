@@ -1,18 +1,15 @@
 <!doctype html>
-<html style='font-size:20px !important'>
+<html style='font-size:24px !important'>
 <head>
 <meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
-
-<link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' /><style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color: #ffffff; --text-color: #333333; --select-text-bg-color: #B5D6FC; --select-text-font-color: auto; --monospace: "Lucida Console",Consolas,"Courier",monospace; --title-bar-height: 20px; }
-.mac-os-11 { --title-bar-height: 28px; }
+<title>小说《诛日》</title><link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' /><style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; }
 html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
-h1, h2, h3, h4, h5 { white-space: pre-wrap; }
-body { margin: 0px; padding: 0px; height: auto; inset: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; }
+body { margin: 0px; padding: 0px; height: auto; bottom: 0px; top: 0px; left: 0px; right: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; tab-size: 4; }
 iframe { margin: auto; }
 a.url { word-break: break-all; }
 a:active, a:hover { outline: 0px; }
 .in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
-#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; overflow-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 36px; }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; overflow-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 40px; }
 #write.first-line-indent p { text-indent: 2em; }
 #write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
 #write.first-line-indent li { margin-left: 2em; }
@@ -23,6 +20,8 @@ body.typora-export { padding-left: 30px; padding-right: 30px; }
 @media screen and (max-width: 500px) {
   body.typora-export { padding-left: 0px; padding-right: 0px; }
   #write { padding-left: 20px; padding-right: 20px; }
+  .CodeMirror-sizer { margin-left: 0px !important; }
+  .CodeMirror-gutters { display: none !important; }
 }
 #write li > figure:last-child { margin-bottom: 0.5rem; }
 #write ol, #write ul { position: relative; }
@@ -50,7 +49,7 @@ sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inh
 #write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
 figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
 figure > table { margin: 0px; }
-thead, tr { break-inside: avoid; break-after: auto; }
+tr { break-inside: avoid; break-after: auto; }
 thead { display: table-header-group; }
 table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
 table.md-table td { min-width: 32px; }
@@ -66,20 +65,18 @@ div.hr:focus { cursor: none; }
 #write pre.ty-contain-cm { white-space: normal; }
 .CodeMirror-gutters { margin-right: 4px; }
 .md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background: inherit; position: relative !important; }
-.md-fences-adv-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+.md-diagram-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
 #write .md-fences.mock-cm { white-space: pre-wrap; }
 .md-fences.md-fences-with-lineno { padding-left: 0px; }
 #write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
 .md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
 .CodeMirror-line, twitterwidget { break-inside: avoid; }
-svg { break-inside: avoid; }
 .footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
 .footnotes + .footnotes { margin-top: 0px; }
 .md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; background: 0px 0px; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; -webkit-tap-highlight-color: transparent; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; }
 li div { padding-top: 0px; }
 blockquote { margin: 1rem 0px; }
 li .mathjax-block, li p { margin: 0.5rem 0px; }
-li blockquote { margin: 1rem 0px; }
 li { margin: 0px; position: relative; }
 blockquote > :last-child { margin-bottom: 0px; }
 blockquote > :first-child, li > :first-child { margin-top: 0px; }
@@ -87,14 +84,12 @@ blockquote > :first-child, li > :first-child { margin-top: 0px; }
 #write .footnote-line { white-space: pre-wrap; }
 @media print {
   body, html { border: 1px solid transparent; height: 99%; break-after: avoid; break-before: avoid; font-variant-ligatures: no-common-ligatures; }
-  #write { margin-top: 0px; border-color: transparent !important; padding-top: 0px !important; padding-bottom: 0px !important; }
+  #write { margin-top: 0px; padding-top: 0px; border-color: transparent !important; }
   .typora-export * { -webkit-print-color-adjust: exact; }
+  html.blink-to-pdf { font-size: 13px; }
   .typora-export #write { break-after: avoid; }
   .typora-export #write::after { height: 0px; }
   .is-mac table { break-inside: avoid; }
-  #write > p:nth-child(1) { margin-top: 0px; }
-  .typora-export-show-outline .typora-export-sidebar { display: none; }
-  figure { overflow-x: visible; }
 }
 .footnote-line { margin-top: 0.714em; font-size: 0.7em; }
 a img, img a { cursor: pointer; }
@@ -105,7 +100,6 @@ p > .md-image:only-child { display: inline-block; width: 100%; }
 #write .MathJax_Display { margin: 0.8em 0px 0px; }
 .md-math-block { width: 100%; }
 .md-math-block:not(:empty)::after { display: none; }
-.MathJax_ref { fill: currentcolor; }
 [contenteditable="true"]:active, [contenteditable="true"]:focus, [contenteditable="false"]:active, [contenteditable="false"]:focus { outline: 0px; box-shadow: none; }
 .md-task-list-item { position: relative; list-style-type: none; }
 .task-list-item.md-task-list-item { padding-left: 0px; }
@@ -132,14 +126,22 @@ p > .md-image:only-child { display: inline-block; width: 100%; }
 }
 a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
 .footnote-line a:not(.reversefootnote) { color: inherit; }
-.reversefootnote { font-family: ui-monospace, sans-serif; }
 .md-attr { display: none; }
 .md-fn-count::after { content: "."; }
 code, pre, samp, tt { font-family: var(--monospace); }
 kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; }
-.md-comment { color: rgb(162, 127, 3); opacity: 0.6; font-family: var(--monospace); }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.8; font-family: var(--monospace); }
 code { text-align: left; vertical-align: initial; }
 a.md-print-anchor { white-space: pre !important; border-width: initial !important; border-style: none !important; border-color: initial !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; background: 0px 0px !important; text-decoration: initial !important; text-shadow: initial !important; }
+.md-inline-math .MathJax_SVG .noError { display: none !important; }
+.html-for-mac .inline-math-svg .MathJax_SVG { vertical-align: 0.2px; }
+.md-math-block .MathJax_SVG_Display { text-align: center; margin: 0px; position: relative; text-indent: 0px; max-width: none; max-height: none; min-height: 0px; min-width: 100%; width: auto; overflow-y: hidden; display: block !important; }
+.MathJax_SVG_Display, .md-inline-math .MathJax_SVG_Display { width: auto; margin: inherit; display: inline-block !important; }
+.MathJax_SVG .MJX-monospace { font-family: var(--monospace); }
+.MathJax_SVG .MJX-sans-serif { font-family: sans-serif; }
+.MathJax_SVG { display: inline; font-style: normal; font-weight: 400; line-height: normal; zoom: 90%; text-indent: 0px; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; overflow-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0px; min-height: 0px; border: 0px; padding: 0px; margin: 0px; }
+.MathJax_SVG * { transition: none 0s ease 0s; }
+.MathJax_SVG_Display svg { vertical-align: middle !important; margin-bottom: 0px !important; margin-top: 0px !important; }
 .os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
 .md-diagram-panel > svg { max-width: 100%; }
 [lang="flow"] svg, [lang="mermaid"] svg { max-width: 100%; height: auto; }
@@ -148,75 +150,14 @@ table tr th { border-bottom: 0px; }
 video { max-width: 100%; display: block; margin: 0px auto; }
 iframe { max-width: 100%; width: 100%; border: none; }
 .highlight td, .highlight tr { border: 0px; }
+svg[id^="mermaidChart"] { line-height: 1em; }
 mark { background: rgb(255, 255, 0); color: rgb(0, 0, 0); }
 .md-html-inline .md-plain, .md-html-inline strong, mark .md-inline-math, mark strong { color: inherit; }
-.md-expand mark .md-meta { opacity: 0.3 !important; }
-mark .md-meta { color: rgb(0, 0, 0); }
+mark .md-meta { color: rgb(0, 0, 0); opacity: 0.3 !important; }
 @media print {
   .typora-export h1, .typora-export h2, .typora-export h3, .typora-export h4, .typora-export h5, .typora-export h6 { break-inside: avoid; }
+  .typora-export h1::after, .typora-export h2::after, .typora-export h3::after, .typora-export h4::after, .typora-export h5::after, .typora-export h6::after { content: ""; display: block; height: 100px; margin-bottom: -100px; }
 }
-.md-diagram-panel .messageText { stroke: none !important; }
-.md-diagram-panel .start-state { fill: var(--node-fill); }
-.md-diagram-panel .edgeLabel rect { opacity: 1 !important; }
-.md-fences.md-fences-math { font-size: 1em; }
-.md-fences-advanced:not(.md-focus) { padding: 0px; white-space: nowrap; border: 0px; }
-.md-fences-advanced:not(.md-focus) { background: inherit; }
-.typora-export-show-outline .typora-export-content { max-width: 1440px; margin: auto; display: flex; flex-direction: row; }
-.typora-export-sidebar { width: 300px; font-size: 0.8rem; margin-top: 80px; margin-right: 18px; }
-.typora-export-show-outline #write { --webkit-flex: 2; flex: 2 1 0%; }
-.typora-export-sidebar .outline-content { position: fixed; top: 0px; max-height: 100%; overflow: hidden auto; padding-bottom: 30px; padding-top: 60px; width: 300px; }
-@media screen and (max-width: 1024px) {
-  .typora-export-sidebar, .typora-export-sidebar .outline-content { width: 240px; }
-}
-@media screen and (max-width: 800px) {
-  .typora-export-sidebar { display: none; }
-}
-.outline-content li, .outline-content ul { margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px; list-style: none; overflow-wrap: anywhere; }
-.outline-content ul { margin-top: 0px; margin-bottom: 0px; }
-.outline-content strong { font-weight: 400; }
-.outline-expander { width: 1rem; height: 1.42857rem; position: relative; display: table-cell; vertical-align: middle; cursor: pointer; padding-left: 4px; }
-.outline-expander::before { content: ""; position: relative; font-family: Ionicons; display: inline-block; font-size: 8px; vertical-align: middle; }
-.outline-item { padding-top: 3px; padding-bottom: 3px; cursor: pointer; }
-.outline-expander:hover::before { content: ""; }
-.outline-h1 > .outline-item { padding-left: 0px; }
-.outline-h2 > .outline-item { padding-left: 1em; }
-.outline-h3 > .outline-item { padding-left: 2em; }
-.outline-h4 > .outline-item { padding-left: 3em; }
-.outline-h5 > .outline-item { padding-left: 4em; }
-.outline-h6 > .outline-item { padding-left: 5em; }
-.outline-label { cursor: pointer; display: table-cell; vertical-align: middle; text-decoration: none; color: inherit; }
-.outline-label:hover { text-decoration: underline; }
-.outline-item:hover { border-color: rgb(245, 245, 245); background-color: var(--item-hover-bg-color); }
-.outline-item:hover { margin-left: -28px; margin-right: -28px; border-left: 28px solid transparent; border-right: 28px solid transparent; }
-.outline-item-single .outline-expander::before, .outline-item-single .outline-expander:hover::before { display: none; }
-.outline-item-open > .outline-item > .outline-expander::before { content: ""; }
-.outline-children { display: none; }
-.info-panel-tab-wrapper { display: none; }
-.outline-item-open > .outline-children { display: block; }
-.typora-export .outline-item { padding-top: 1px; padding-bottom: 1px; }
-.typora-export .outline-item:hover { margin-right: -8px; border-right: 8px solid transparent; }
-.typora-export .outline-expander::before { content: "+"; font-family: inherit; top: -1px; }
-.typora-export .outline-expander:hover::before, .typora-export .outline-item-open > .outline-item > .outline-expander::before { content: "−"; }
-.typora-export-collapse-outline .outline-children { display: none; }
-.typora-export-collapse-outline .outline-item-open > .outline-children, .typora-export-no-collapse-outline .outline-children { display: block; }
-.typora-export-no-collapse-outline .outline-expander::before { content: "" !important; }
-.typora-export-show-outline .outline-item-active > .outline-item .outline-label { font-weight: 700; }
-.md-inline-math-container mjx-container { zoom: 0.95; }
-mjx-container { break-inside: avoid; }
-.md-alert.md-alert-note { border-left-color: rgb(9, 105, 218); }
-.md-alert.md-alert-important { border-left-color: rgb(130, 80, 223); }
-.md-alert.md-alert-warning { border-left-color: rgb(154, 103, 0); }
-.md-alert.md-alert-tip { border-left-color: rgb(31, 136, 61); }
-.md-alert.md-alert-caution { border-left-color: rgb(207, 34, 46); }
-.md-alert { padding: 0px 1em; margin-bottom: 16px; color: inherit; border-left: 0.25em solid rgb(0, 0, 0); }
-.md-alert-text-note { color: rgb(9, 105, 218); }
-.md-alert-text-important { color: rgb(130, 80, 223); }
-.md-alert-text-warning { color: rgb(154, 103, 0); }
-.md-alert-text-tip { color: rgb(31, 136, 61); }
-.md-alert-text-caution { color: rgb(207, 34, 46); }
-.md-alert-text { font-size: 0.9rem; font-weight: 700; }
-.md-alert-text svg { fill: currentcolor; position: relative; top: 0.125em; margin-right: 1ch; overflow: visible; }
-.md-alert-text-container::after { content: attr(data-text); text-transform: capitalize; pointer-events: none; margin-right: 1ch; }
 
 
 :root {
@@ -224,7 +165,7 @@ mjx-container { break-inside: avoid; }
     --control-text-color: #777;
 }
 
-@include-when-export url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext);
+@include-when-export url(https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext);
 
 /* open-sans-regular - latin-ext_latin */
   /* open-sans-italic - latin-ext_latin */
@@ -232,11 +173,10 @@ mjx-container { break-inside: avoid; }
     /* open-sans-700italic - latin-ext_latin */
   html {
     font-size: 16px;
-    -webkit-font-smoothing: antialiased;
 }
 
 body {
-    font-family: "Open Sans","Clear Sans", "Helvetica Neue", Helvetica, Arial, 'Segoe UI Emoji', sans-serif;
+    font-family: "Open Sans","Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: rgb(51, 51, 51);
     line-height: 1.6;
 }
@@ -324,7 +264,7 @@ h2 {
     border-bottom: 1px solid #eee;
 }
 
-/*@media print {
+@media print {
     .typora-export h1,
     .typora-export h2 {
         border-bottom: none;
@@ -333,13 +273,10 @@ h2 {
 
     .typora-export h1::after,
     .typora-export h2::after {
-        content: "";
-        display: block;
-        height: 100px;
-        margin-top: -96px;
         border-top: 1px solid #eee;
+        margin-top: .3em;
     }
-}*/
+}
 
 h3 {
     font-size: 1.5em;
@@ -405,7 +342,7 @@ table {
     word-break: initial;
 }
 table tr {
-    border: 1px solid #dfe2e5;
+    border-top: 1px solid #dfe2e5;
     margin: 0;
     padding: 0;
 }
@@ -413,24 +350,24 @@ table tr:nth-child(2n),
 thead {
     background-color: #f8f8f8;
 }
-table th {
+table tr th {
     font-weight: bold;
     border: 1px solid #dfe2e5;
     border-bottom: 0;
     margin: 0;
     padding: 6px 13px;
 }
-table td {
+table tr td {
     border: 1px solid #dfe2e5;
     margin: 0;
     padding: 6px 13px;
 }
-table th:first-child,
-table td:first-child {
+table tr th:first-child,
+table tr td:first-child {
     margin-top: 0;
 }
-table th:last-child,
-table td:last-child {
+table tr th:last-child,
+table tr td:last-child {
     margin-bottom: 0;
 }
 
@@ -475,8 +412,11 @@ code {
     html {
         font-size: 13px;
     }
+    table,
     pre {
         page-break-inside: avoid;
+    }
+    pre {
         word-wrap: break-word;
     }
 }
@@ -572,17 +512,13 @@ header, .context-menu, .megamenu-content, footer{
     background-color: var(--side-bar-bg-color);
 }
 
-.mac-os #write{
-    caret-color: AccentColor;
-}
-
 .md-lang {
     color: #b4654d;
 }
 
-/*.html-for-mac {
+.html-for-mac .context-menu {
     --item-hover-bg-color: #E6F0FE;
-}*/
+}
 
 #md-notification .btn {
     border: 0;
@@ -590,7 +526,6 @@ header, .context-menu, .megamenu-content, footer{
 
 .dropdown-menu .divider {
     border-color: #e5e5e5;
-    opacity: 0.4;
 }
 
 .ty-preferences .window-content {
@@ -602,72 +537,10 @@ header, .context-menu, .megamenu-content, footer{
     background: #999;
 }
 
-.menu-item-container a.menu-style-btn {
-    background-color: #f5f8fa;
-    background-image: linear-gradient( 180deg , hsla(0, 0%, 100%, 0.8), hsla(0, 0%, 100%, 0)); 
-}
 
-
-
-</style><title>zhuri</title>
+</style>
 </head>
-<body class='typora-export os-windows'><div class='typora-export-content'>
-<div id='write'  class=''><h3 id='诛日-其一'><span>诛日 其一</span></h3><p><span>“俺理解你们的心情。”旅人站在玻璃幕前，“俺们那儿也有不少人不喜欢‘射日计划’。也不知道他们为啥不想想，这么多太阳在自家里燃烧，是不是太浪费了。”</span>
-<span>旅人是来向地球传递一项技术的。</span>
-<span>旅人的文明并没有这么清闲。旅人只是其中的“灼热裂解”社的成员。他们的主义是教导宇宙中的文明一项他们内部的基本技术——如何不浪费自身星系的恒星能源。</span>
-<span>“你们太落后了。”旅人的眼睛扫过八大行星，“居然到现在连你们的气泡都没用上。”他说的气泡是指木星。</span>
-<span>“搁俺们那儿的话，每月不知道要吃掉你们多少个气泡。”旅人家乡的月，也是卫星相变化的周期，不过相当于地球的一周半。</span></p><p><span>总有人对太阳的某种形而上的，唯心的意义，并无尊重，或者说根本看不见。他们在宇宙中东奔西走，看见一处恒星篝火，可能去取取暖。</span>
-<span>但是末了，定然一脚踩碎，把剩余的柴火带走，绝不会有一丝犹疑。</span>
-<span>这实在太自然了。</span></p><p><span>“那么，地球文明要怎么利用熄灭后的太阳呢？”执政官这几天已经阅览了“灼热裂解”带来的技术。其设计精妙，和一些超出人类的技术知识让他背后的研究院都惊骇不已。</span></p><p><span>这着实是个蠢问题。</span>
-<span>熄灭太阳之后，如果人类靠近，并取得十亿分之一的能源。也足够本代人类的曾曾曾孙大肆挥霍。</span></p><p><span>但是，旅人开口了。</span>
-<span>“吃下去。”</span></p><p><span>执政官以为自己听错了之前，怀疑是翻译器的问题。</span>
-<span>但是旅人张开身体表面的一个器官，用手足做了一个喂食的动作。执政官后来知道，这个器官在裂解文明早已退化，不再执行交换物质的功能，只是某种文化习惯。</span></p><p><span>执政官一开始以为这是某种，将可控核聚变装置放置在体内，使个体随取随用的技术，摆了摆手说不必要了。</span></p><p><span>但是裂解旅人做了一个演示，也正是这个演示引起在场所有人的轩然大波。</span></p><p><span>他的附肢体深入自己，抓出一小团，云朵一般的物体，抬手向执政官丢去。</span>
-<span>没有人试图防备，执政官被云朵吞没，什么都没有剩下。</span></p><h3 id='诛日-其二'><span>诛日 其二</span></h3><p><span>“长针”穿透太阳的日冕，穿透对流层、辐射层，直至贯穿太阳的核心，从另一侧穿出。</span>
-<span>执政官感觉到了一声喑哑的嘶吼，他很确定自己不是听到的。穿刺太阳这个他前一小时还感觉荒谬的幻觉已然成立。</span>
-<span>执政官觉得它不再像个火球，无边的光和热，而像...一个肉丸，可以撕咬的肉丸。又像是一头壮年耕牛，被主人莫名奇妙的穿刺起来，放在火上慢烤，等待着胶质蛋白慢慢溶解，那些驱使他技力的组织，在火焰里慢慢的融化在口腔，变成营养和盛宴。</span></p><p><span>裂解文明带来的技术实在超出想象。这根长针的制作材料由旅人从太阳系就地采集，却能贯穿超高温度和密度的太阳，甚至针尖看不出一丝痕迹。针的中央位置已经抵达核心，开始发挥作用。</span></p><p><span>旅人告诉执政官，太阳内部的聚变正在停歇，需要大约一万年的时间慢慢暗淡坍缩，直径缩小到原先的三成。这意味着人类仍然有资格享受余晖，只是他们需要专注于发展聚变和采集工业，之后，他们需要靠近太阳，自己采集能源和使用。</span></p><p><span>“不再有普照一切的辉光了。”旅者说，“俺们遇到过一个文明，每个个体都掌握了裂解和使用完整太阳的手段。他们往往结伴而行，在路上，见到一颗恒星，就烤烤火，然后一脚踩碎，瓜分材料。”</span></p><p><span>“他们叫什么？”执政官紧张了起来。 </span></p><p><span>“饕餮客。”裂解旅人笑了，“放心，他们对已经被裂解的太阳没兴趣。而且他们往往出手瓜分了一颗恒星，还对行星上的文明秋毫无犯，这些文明一般都会因为能源枯竭而...饿死。”</span></p><h3 id='诛日-其三'><span>诛日 其三 </span></h3><p><span>饕餮客检查了一遍仓库储备的燃料。</span>
-<span>他通过传感器撇了一眼，还是发动了引擎。</span></p><p><span>饕餮客的行舟外，是破碎裂解的一颗太阳。</span>
-<span>好像这个星系有文明的迹象，但是他懒得去确认了。饕餮客带不走所有的氢，也不可能立即终止所有聚变。如果那颗星球上有着原始而简单的文明，他们将在未来几天观测到太阳时暗时亮，直至熄灭。缺乏引力束缚的他们可能被甩出去，在茫茫宇宙中冻成寒冰，等待着“宇宙地理”的考古者们发掘。也可能“时日曷丧”，和自家的恒星走到最后。</span></p><p><span>裂解文明的旅人并不知道事件的全貌，也可能饕餮客只是宇宙中流寇强盗一般的地位，不值得他们的文明忌惮和调查。</span></p><p><span>饕餮客的母星被裂解了恒星。</span>
-<span>那是......一个天文尺度的时间之前了。</span>
-<span>幸运的是，他的文明对天体、基础物理和工程学的研究足够探明这一事实。不幸的是，裂解者同样没有留下任何恒星的资源。</span>
-<span>幸运的是，他的星系里还有“气泡”。</span>
-<span>饕餮客们彼此把恒星称作“篝火”，把气态行星称作“气泡”。大家一般懒得对气泡动手，只把裂解篝火，带走燃料，看作要义。</span></p><p><span>不幸的是，那是饕餮客一生的开始。</span></p><p><span>他相比行星上的其他人，倒也没有什么分别。太阳裂解后的第五年，辐射功率降到了50%，但是文明的规模缩水了70%</span>
-<span>饕餮客本来没有打算继续活下去。但是文明还是紧张起来，完成了去往气泡的任务。</span>
-<span>他们依附气泡，慢慢的重新繁殖生长。饕餮客只是感到一种深重的不解。</span>
-<span>他的文明再度繁荣，即将抛下被裂解的太阳，可是饕餮客的疑惑反倒让他继续苟活。</span>
-<span>终于，他掌握了一份裂解装置，也明白了自己的疑惑——太阳被裂解的那一刻，是什么感受？</span></p><p><span>他决定亲自验证。</span></p><p><span>总的来说，“饕餮客”这一现象，并不是什么有规模的组织，更接近于一种“传染病”。饕餮客们裂解其他文明的恒星时，往往会激起幸存者的疑惑。在受害者文明为了生存而不择手段的发展航天工业时，一部分幸存者，会转变成“饕餮客”，去感染和裂解其他恒星。</span></p><p><span>这样，一种疑惑就以默契的方式，在宇宙中不断扩散传染。</span></p><p><span>饕餮客其实并没有得到什么答案。</span>
-<span>太阳不会嘶吼。他慢慢清楚了这个事实。</span>
-<span>他甚至反过来认为，太阳很温柔。</span>
-<span>也许那些灼热裂解的人们，也是喜欢这样一点。</span>
-<span>但真是浪费，又要告知土著文明，又要把能拿到手的资源拱手相让。</span>
-<span>他要独享一个个太阳，就从，吃下他们做起。</span></p><h3 id='铸日-其四完结'><span>铸日 其四（完结）</span></h3><p><span>我回到了太阳系。</span>
-<span>“气泡”木星已经不见了。</span>
-<span>太阳熄灭，辐射功率归零用了一万年。在那之前，地球人类已经吸干了木星。</span>
-<span>总不能真的等到太阳熄灭再开始做吧。</span></p><p><span>我看着他们的收集器一点一点的吮吸木星的大气，那收集器长的像奶嘴，充足了就回到近地轨道上的空间站，灌入一个储蓄罐里。</span>
-<span>人们不断的从储蓄罐里抽取氢气，聚变，每到夜晚，就吮吸的紧一点——太阳的功率，已经不太能供给地球的温度了。</span></p><p><span>我没有看到木星的结局，只看到它缩水了20%</span>
-<span>听说最后连木星的氦气都没有放过，吸到朱庇特（木星）只剩下一个石头核，连里面的重元素都吃干抹净。</span>
-<span>这个气泡被地球人类嘬的彻底，太阳系的一颗行星就此消亡。而人类终于在熄灭的太阳上空繁荣生长。</span>
-<span>那都是我休眠后的事了。</span></p><p><span>人类开始分散向不同的恒星系进发。他们最初还会彼此联络，漫长的光年里，些微文明，或原始，或发达，被发现和交流。最初，他们约定好，只要有文明，就不对恒星动手。也不采集文明母星上的资源。</span>
-<span>后来，地球文明系越来越繁荣分化，有些部分已经失去控制了，不再响应。</span>
-<span>天知道他们有没有对别人的星星下手。</span></p><p><span>我也遇见了一个饕餮客。</span>
-<span>那是我脱离文明系，独自带着航船远游时遇到的。</span>
-<span>它说，长的和我一样的生物，曾经毁灭了它的恒星。</span>
-<span>但是它没有收下我给的反应堆，它的航船要载着它去找下一个恒星。</span></p><p><span>我最后没有上报这件事，或许是因为它没有开向我所知道的地球文明系的方向。</span></p><p><span>——</span>
-<span>太阳系中只有一个喑哑的核。</span>
-<span>漆黑一片，行星们环绕着曾经的光明，沉默不语。</span>
-<span>我让船只停留在近日轨道。</span>
-<span>我启动了预设程序。</span>
-<span>六个“奶嘴”从飞船侧方飞出，占据了日核的上下左右前后，六个方向。“奶嘴”早就更新换代，内部存储的都是高度压缩的氢。它们接触到日核，便开始融化，慢慢覆盖整个日核。</span>
-<span>而后，奶嘴再回到舱室，补充能源。</span>
-<span>日核上，液态的氢在流动。</span>
-<span>我留足了备用的氢，叫停了“奶嘴”。</span>
-<span>我的航船吐出一张透明的薄膜，绕着太阳转动，薄膜的接口彼此自然融合，将太阳包裹。</span>
-<span>随后，我启动装置，开启引擎，一点一点的把压力和温度，透过薄膜，导入日核表面。</span></p><p><span>终于薄膜之下，氢开始聚变。</span>
-<span>薄膜控制着聚变的规模，模拟着原始太阳的负反馈机制，让它不至于无限膨胀。</span>
-<span>薄膜过滤了大部分γ射线，转换成可见光对外辐射。它大概有原始太阳百分之一的功率，坐在近日轨道上，感觉却像久违的，在地球上看了一次晚霞。</span>
-<span>我带来的燃料差不过够它燃烧千年，薄膜倒是不会怎么损耗，还可以再次填装。</span></p><p><span>这也不是什么稀罕项目。地球文明系里，材料消耗大约是五年的......不用年为单位，那就是1.5亿秒的平均收入吧。</span>
-<span> 可惜这么低的造价，也没什么人拿去点灯。</span>
-<span>现在，人们管铸造恒星叫“点灯”。</span></p><p><span>我只是直视着它，虽然百分之一的功率依旧刺眼。</span>
-<span>那根裂解文明送的“长针”，其实在人类离开太阳系的时候，就拔去了。它哆哆嗦嗦的闪烁几下，像是在告别。人们发现刻意留下的一点氢，的确不够它再聚变几次，就失望的带走了。</span></p><p><span>真希望那个饕餮客在这里。</span>
-<span>他找到另一颗星星了么。</span></p><p><span>（《诛/铸日》完）</span></p><p><span>成文于2023年2月9日</span></p><p><span>整理/发布于2025年8月7日</span></p></div></div>
+<body class='typora-export os-windows'>
+<div id='write'  class=''><h3><a name="诛日-其一" class="md-header-anchor"></a><span>诛日 其一</span></h3><p><span>“俺理解你们的心情。”旅人站在玻璃幕前，“俺们那儿也有不少人不喜欢‘射日计划’。也不知道他们为啥不想想，这么多太阳在自家里燃烧，是不是太浪费了。” </span></p><p><span>旅人是来向地球传递一项技术的。 </span></p><p><span>旅人所在的文明倒没有这么清闲。只是，旅人是其中的“灼热裂解”社的成员。他们的主义是教导宇宙中的智慧文明一项他们内部的基本技术——如何不浪费自身星系的恒星能源。 </span></p><p><span>“你们太落后了。”旅人的眼睛扫过八大行星，“居然到现在连你们的气泡都没用上。”他说的气泡是指木星。 </span></p><p><span>“搁俺们那儿的话，每月不知道要吃掉你们多少个气泡。”旅人家乡的月，也是卫星星相变化的周期，不过相当于地球的一周半。</span></p><p>&nbsp;</p><p><span>总有人对太阳的某种形而上的，唯心的意义，并无尊重，或者说根本看不见。他们在宇宙中东奔西走，看见一处恒星篝火，可能去取取暖。 但是末了，定然一脚踩碎，把剩余的柴火带走，绝不会有一丝犹疑。 </span></p><p><span>这实在太自然了。</span></p><p>&nbsp;</p><p><span>“那么，地球文明要怎么利用熄灭后的太阳呢？”执政官这几天已经阅览了“灼热裂解”带来的技术。其设计精妙，蕴含大量超出人类的技术知识，让他背后的研究院都惊骇不已。</span></p><p><span>但这着实是个蠢问题。</span></p><p><span>熄灭太阳之后，如果人类靠近，并取得十亿分之一的能源，也足够本代人类的曾曾曾孙大肆挥霍。</span></p><p>&nbsp;</p><p><span>然而，旅人开口回答了。 </span></p><p><span>“吃下去。”</span></p><p>&nbsp;</p><p><span>在以为自己听错了之前，执政官怀疑是翻译器的问题。 </span></p><p><span>但是旅人张开身体表面的一个器官，用手足做了一个喂食的动作。执政官后来知道，这个器官在裂解文明早已退化，不再执行交换物质的功能，只是某种文化习惯。</span></p><p><span>执政官一开始以为这是某种，将可控核聚变装置放置在体内，使个体随取随用的技术，摆了摆手说不必要了。</span></p><p><span>但是裂解旅人做了一个演示，也正是这个演示引起在场所有人的轩然大波。</span></p><p><span>它的附肢体深入自己，抓出一小团，云朵一般的物体，抬手向执政官丢去。 没有人试图防备，执政官被云朵吞没，什么都没有剩下。</span></p><p><span>在场的所有地球人大惊失色，却没有任何人敢轻举妄动。直到裂解旅人伸出附肢，接触了那一小块云朵。</span></p><p><span>轻轻一扯，还在惊诧状态的执政官被原模原样地，如画笔般涂抹了出来。</span></p><p><span>“这不是什么消灭旧的，复制新的。”旅人挥舞触须，它很快地学会了用这种姿势表示否定，“也不是你们所说的那种‘忒修斯之船’。”。</span></p><p><span>“确实。”执政官不再沉浸在震惊中，很快向周围的人报告，“我一直感觉自己处在一种极其亲和的状态，仿佛是在以一种温暖而毫无灼烧感的形式，拥抱太阳，让人欲罢不能。如果有意识的话，我甚至能......操控这种...等离子体状态的...氢？”</span></p><p><span>他震惊地看向旅人。后者轻轻颔首，这又是一个它很快学会的姿势。</span></p><p>&nbsp;</p><p>&nbsp;</p><h3><a name="诛日-其二" class="md-header-anchor"></a><span>诛日 其二</span></h3><p><span>“长针”穿透太阳的日冕，穿透对流层、辐射层，直至贯穿太阳的核心，从另一侧穿出。 执政官感觉到了一声喑哑的嘶吼，他很确定自己不是听到的。穿刺太阳这个他前一小时还感觉荒谬的幻觉已然成立。 执政官觉得它不再像个火球，无边的光和热，而像...一个肉丸，可以撕咬的肉丸。又像是一头壮年耕牛，被穿刺起来，放在火上慢烤，等待着胶质蛋白慢慢溶解，那些驱使它力量的组织，在火焰里慢慢的融化在口腔，变成营养和盛宴。</span></p><p><span>裂解文明带来的技术实在超出想象。这根长针的制作材料由旅人从太阳系就地采集，却能贯穿超高温度和密度的太阳，甚至针尖看不出一丝痕迹。针的中央位置已经抵达核心，开始发挥作用。</span></p><p><span>旅人告诉执政官，太阳内部的聚变正在停歇，需要大约一万年的时间慢慢暗淡坍缩，直径缩小到原先的三成。这意味着人类仍然有资格享受余晖，只是他们需要专注于发展聚变和采集工业，之后，他们需要靠近太阳，自己采集能源和使用。</span></p><p><span>“不再有普照一切的辉光了。”旅者说，“俺们遇到过一个文明，每个个体都掌握了裂解和使用完整太阳的手段。他们往往结伴而行，在路上，见到一颗恒星，就烤烤火，然后一脚踩碎，瓜分材料。他们可没这么有耐心，往往手段粗暴，短时间内就吃干抹净跑了。”</span></p><p><span>“他们叫什么？”执政官紧张了起来。 </span></p><p><span>“饕餮客。”裂解旅人笑了，“放心，他们对已经被裂解的太阳没兴趣。而且他们往往出手瓜分了一颗恒星，还对行星上的文明秋毫无犯，这些文明一般都会因为能源枯竭而...饿死。”</span></p><p>&nbsp;</p><h3><a name="诛日-其三" class="md-header-anchor"></a><span>诛日 其三 </span></h3><p><span>饕餮客检查了一遍仓库储备的燃料。 </span></p><p><span>他通过传感器撇了一眼，还是发动了引擎。</span></p><p>&nbsp;</p><p><span>饕餮客的行舟外，是破碎裂解的一颗太阳。</span></p><p><span>好像这个星系有文明的迹象，但是他懒得去确认了。饕餮客带不走所有的氢，也不可能立即终止所有聚变。如果那颗星球上有着原始而简单的文明，他们将在未来几年观测到太阳时暗时亮，直至熄灭。缺乏引力束缚的他们可能被甩出去，在茫茫宇宙中冻成寒冰，等待着“宇宙地理”的考古者们发掘。也可能“时日曷丧”，和自家的恒星一同走到最后。</span></p><p><span>裂解文明的旅人并不知道事件的全貌，也可能饕餮客只是宇宙中流寇海盗一般的地位，不值得他们的文明忌惮和调查。</span></p><p>&nbsp;</p><p><span>饕餮客的母星被裂解了恒星。 </span></p><p><span>那是......一个天文尺度的时间之前了。 </span></p><p><span>幸运的是，他的文明对天体、基础物理和工程学的研究足够探明这一事实。不幸的是，裂解者同样没有留下任何恒星的资源。 </span></p><p><span>幸运的是，他的星系里还有“气泡”。 </span></p><p><span>饕餮客们彼此把恒星称作“篝火”，把气态行星称作“气泡”。他们一般懒得对气泡动手，只把裂解篝火，带走燃料，看作要义。</span></p><p><span>不幸的是，那是饕餮客一生的开始。</span></p><p>&nbsp;</p><p><span>他相比行星上的其他人，倒也没有什么区别。太阳裂解后的第五年，辐射功率降到了50%，但是文明的规模缩水了70%</span></p><p><span>饕餮客本来对这一切没有什么感触。但是文明还是紧张起来，完成了去往气泡的任务。</span></p><p><span>他们依附气泡，慢慢的重新繁殖生长。饕餮客却感到了一种深重的不解。 </span></p><p><span>他的文明再度繁荣，即将抛下被裂解的太阳，可是饕餮客的疑惑反倒让他继续苟活。</span></p><p><span>终于，他掌握了一份裂解装置，也明白了自己的疑惑——太阳被裂解的那一刻，是什么感受？</span></p><p>&nbsp;</p><p><span>他决定亲自验证。</span></p><p>&nbsp;</p><p><span>总的来说，“饕餮客”这一现象，并不是什么有规模的组织，更接近于一种“传染病”。饕餮客们裂解其他文明的恒星时，往往会激起幸存者的疑惑。在受害者文明为了生存而发展航天工业时，一部分幸存者，会转变成“饕餮客”，去感染和裂解其他恒星。</span></p><p><span>这样，一种疑惑，就以默契的方式，在宇宙中不断扩散传染。</span></p><p>&nbsp;</p><p><span>饕餮客其实并没有得到什么答案。 </span></p><p><span>太阳不会嘶吼。他慢慢清楚了这个事实。 </span></p><p><span>他甚至反过来认为，太阳很温柔。 </span></p><p><span>也许那些”灼热裂解“社的人们，也是喜欢这样一点。 </span></p><p><span>但真是浪费，又要告知土著文明，又要把能拿到手的资源拱手相让。 </span></p><p><span>他要独享一个个太阳，就从，吃下它们做起。</span></p><p>&nbsp;</p><h3><a name="铸日-其四完结）" class="md-header-anchor"></a><span>铸日 其四（完结）</span></h3><p><span>我回到了太阳系。</span></p><p><span>“气泡”木星已经不见了。 </span></p><p><span>太阳熄灭，辐射功率归零用了一万年。在那之前，地球人类已经吸干了木星。</span></p><p><span>总不能真的等到太阳熄灭再开始做吧。</span></p><p>&nbsp;</p><p><span>我看着他们的收集器一点一点的吮吸木星的大气，那收集器长的像奶嘴，充足了就回到近地轨道上的空间站，灌入一个储蓄罐里。 </span></p><p><span>人们不断的从储蓄罐里抽取氢气，聚变，每个区域到了夜晚，就吮吸的紧一点——太阳的功率，已经不太能供给维持地球的温度了。</span></p><p>&nbsp;</p><p><span>我没有看到木星的结局，只看到它缩水了20% </span></p><p><span>听说最后连木星的氦气都没有放过，吸到木星只剩下一个石头核，连里面的重元素都吃干抹净。 </span></p><p><span>这个气泡被地球人类嘬的彻底，太阳系的一颗行星就此消亡。而人类终于在熄灭的太阳上空繁荣生长。 </span></p><p><span>那都是我休眠后的事了。</span></p><p>&nbsp;</p><p><span>人类开始分散向不同的恒星系进发。他们最初还会彼此联络，漫长的光年里，些微文明，或原始，或发达，被发现和交流。最初，他们约定好，只要有文明，就不对恒星动手。也不采集文明母星上的资源。 </span></p><p><span>后来，地球文明系越来越繁荣分化，有些部分已经失去控制了，不再响应。 </span></p><p><span>天知道他们有没有对别人的星星下手。</span></p><p>&nbsp;</p><p><span>我也遇见了一个饕餮客。 </span></p><p><span>那是我脱离文明系，独自带着航船远游时遇到的。 </span></p><p><span>它说，长的和我相像的生物，曾经毁灭了它的恒星。 </span></p><p><span>但是它没有收下我给的反应堆，它的航船要载着它去找下一个恒星。</span></p><p>&nbsp;</p><p><span>最后我也没有上报这件事，或许是因为它没有开向我所知道的地球文明系的方向。</span></p><p><span>或许是因为，它告诉我，它们似乎都不曾“拥抱”太阳，起码，不可能是它们自己原本的那个。</span></p><p>&nbsp;</p><p><span>—— </span></p><p><span>太阳系中只有一个喑哑的核。</span></p><p><span>漆黑一片，行星们环绕着曾经的光明，沉默不语。 </span></p><p><span>我让船只停留在近日轨道。</span></p><p><span>我启动了预设程序。</span></p><p><span>六个“奶嘴”从飞船侧方飞出，占据了日核的上下左右前后，六个方向。“奶嘴”早就更新换代，内部存储的都是高度压缩的氢。它们接触到日核，便开始融化，慢慢覆盖整个日核。</span></p><p><span>而后，奶嘴再回到舱室，补充能源。</span></p><p><span>日核上，液态的氢在流动。</span></p><p><span>我留足了备用的氢，叫停了“奶嘴”。 </span></p><p><span>我的航船吐出一张透明的薄膜，绕着太阳转动，薄膜的接口彼此自然融合，将太阳包裹。 </span></p><p><span>随后，我启动装置，开启引擎，一点一点的把压力和温度，透过薄膜，导入日核表面。</span></p><p>&nbsp;</p><p><span>终于薄膜之下，氢开始聚变。 </span></p><p><span>薄膜控制着聚变的规模，模拟着原始太阳的负反馈机制，让它不至于无限膨胀。</span></p><p><span>薄膜过滤了大部分γ射线，转换成可见光对外辐射。它大概有原始太阳百分之一的功率，坐在近日轨道上，感觉却像久违的，在地球上看了一次晚霞。 </span></p><p><span>我带来的燃料差不过够它燃烧千年，薄膜倒是不会怎么损耗，还可以再次填装氢燃料。</span></p><p>&nbsp;</p><p><span>这倒也不是什么稀罕项目。地球文明系里，材料消耗大约是五年的......不用年为单位，那就是1.5亿秒的平均收入吧。 </span></p><p><span>可惜这么低的造价，也没什么人拿去点灯。 </span></p><p><span>现在，人们管铸造恒星叫“点灯”。</span></p><p>&nbsp;</p><p><span>我只是直视着它，虽然百分之一的功率依旧刺眼。 </span></p><p><span>那根裂解文明送的“长针”，其实在人类离开太阳系的时候，就拔去了。它哆哆嗦嗦的闪烁几下，像是在告别。人们发现刻意留下的一点氢，的确不够它再聚变几次，就失望的带走了。</span></p><p>&nbsp;</p><p><span>真希望那个饕餮客在这里。 </span></p><p><span>他找到另一颗星星了么。</span></p><p><span>（《诛/铸日》完）</span></p><p>&nbsp;</p><p>&nbsp;</p><p><span>成文于2023年2月9日</span></p><p><span>整理/发布于2025年8月7日</span></p><p><span>修改于2025年9月11日</span></p></div>
 </body>
 </html>
