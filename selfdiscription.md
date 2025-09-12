@@ -1,3 +1,5 @@
+### 即兴摄影作品展示
+
 <img src="https://yanzhao1027.github.io/images/scut1.jpg" alt="示例图片" style="zoom:50%;" />
 
 <img src="https://yanzhao1027.github.io/images/scut3.jpg" alt="示例图片" style="zoom:50%;" />
@@ -11,10 +13,34 @@
 
 <div align="center"> 摄于2025年9月6日入学晚间</div>
 
+------
+
+### 游戏摄影作品展示
+
+<img src="https://gitee.com/yanzhao1027/images/raw/master/game1.png" alt="示例图片" style="zoom:50%;" />
+
+<img src="https://gitee.com/yanzhao1027/images/raw/master/game2.png" alt="示例图片" style="zoom:50%;" />
+
+<img src="https://gitee.com/yanzhao1027/images/raw/master/game3.png" alt="示例图片" style="zoom:50%;" />
 
 
 
+<table>
+  <tr>
+    <td><img src="https://gitee.com/yanzhao1027/images/raw/master/game1-1.png" alt="scut4" width="100%"></td>
+    <td><img src="https://gitee.com/yanzhao1027/images/raw/master/game1-2.png" alt="scut4" width="100%"></td>
+    <td><img src="https://gitee.com/yanzhao1027/images/raw/master/game1-3.png" alt="scut4" width="100%"></td>
+  </tr>
+</table>
 
 
 
-实现理念的方法往往不难，难的是保持调查、搜索和实践的勇气。
+<img src="https://gitee.com/yanzhao1027/images/raw/master/game4.png" alt="示例图片" style="zoom:50%;" />
+
+<div align="center"> 基于深圳中学FORMS项目以及SMSEarthHill项目</div>
+
+---
+
+实现理念的方法往往不难，难的是保持探索、调查和实践的勇气和毅力。
+
+
