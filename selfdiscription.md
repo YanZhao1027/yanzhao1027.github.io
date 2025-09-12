@@ -19,8 +19,6 @@
 
 <img src="https://yanzhao1027.github.io/images/game1.jpg" alt="示例图片" style="zoom:50%;" />
 
-<img src="https://gitee.com/yanzhao1027/images/raw/master/game2.png" alt="示例图片" style="zoom:50%;" />
-
 <img src="https://yanzhao1027.github.io/images/game2.jpg" alt="示例图片" style="zoom:50%;" />
 
 
@@ -29,7 +27,7 @@
   <tr>
     <td><img src="https://yanzhao1027.github.io/images/game1-1.jpg" alt="scut4" width="100%"></td>
     <td><img src="https://yanzhao1027.github.io/images/game1-2.jpg" alt="scut4" width="100%"></td>
-    <td><img src="https://yanzhao1027.github.io/images/game1-3.jpg alt="scut4" width="100%"></td>
+    <td><img src="https://yanzhao1027.github.io/images/game1-3.jpg" alt="scut4" width="100%"></td>
   </tr>
 </table>
 
