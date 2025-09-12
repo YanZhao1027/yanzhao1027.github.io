@@ -8,7 +8,7 @@
 
 兴趣是摄影，编程，以及搓炉石。
 
-[个人展示](yanzhao1027.github.io/selfdiscription.md)
+[个人展示](selfdiscription.md)
 
 ————————
 
