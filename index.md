@@ -20,4 +20,4 @@
 
 
 
-<img src="https://gitee.com/yanzhao1027/images/raw/master/pic.jpg" alt="示例图片" style="zoom:50%;" />
+<img src="https://yanzhao1027.github.io/images/pic.jpg" alt="示例图片" style="zoom:50%;" />
