@@ -19,6 +19,7 @@
 [铸日](https://yanzhao1027.github.io/小说《铸日》)
 
 短篇异世界短篇小说《时间魔法》。
-[铸日](https://yanzhao1027.github.io/时间魔法)
+
+[时间魔法](https://yanzhao1027.github.io/时间魔法)
 
 <img src="https://yanzhao1027.github.io/images/pic.jpg" alt="示例图片" style="zoom:50%;" />
