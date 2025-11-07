@@ -4,7 +4,6 @@
 
 [sezhaoyan@mail.scut.edu.cn](mailto:sezhaoyan@mail.scut.edu.cn)
 
-<img src="https://yanzhao1027.github.io/images/yzwebsite.png" alt="链接二维码" style="zoom:100%;"/>
 
 ————————
 

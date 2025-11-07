@@ -13,6 +13,7 @@
 
 <div align="center"> 摄于2025年9月6日入学晚间</div>
 
+
 ------
 
 ### 游戏摄影作品展示
@@ -23,13 +24,12 @@
 
 
 
-<table>
-  <tr>
-    <td><img src="https://yanzhao1027.github.io/images/game1-1.jpg" alt="scut4" width="100%"></td>
-    <td><img src="https://yanzhao1027.github.io/images/game1-2.jpg" alt="scut4" width="100%"></td>
-    <td><img src="https://yanzhao1027.github.io/images/game1-3.jpg" alt="scut4" width="100%"></td>
-  </tr>
-</table>
+<img src="https://yanzhao1027.github.io/images/game1-1.jpg" alt="scut4" width="100%"></td>
+
+<img src="https://yanzhao1027.github.io/images/game1-2.jpg" alt="scut4" width="100%"></td>
+  
+<img src="https://yanzhao1027.github.io/images/game1-3.jpg" alt="scut4" width="100%"></td>
+
 
 
 
