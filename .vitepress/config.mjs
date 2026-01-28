@@ -39,10 +39,7 @@ export default defineConfig({
       },
       { 
   text: '月神demo', 
-  link: '/artemis-demo2.html',
-  // 强制浏览器将其视为外部链接或独立页面
-  target: '_self', 
-  rel: 'noopener'
+  link: '/artemis-play'
 }
     ],
 
