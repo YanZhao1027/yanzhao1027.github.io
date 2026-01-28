@@ -15,7 +15,7 @@ hero:
       link: /api-examples
     - theme: brand
       text: 月神-Demo
-      link: /gamedemos/artemis-demo.html
+      link: /artemis-demo.html
 
 # features:
 #  - title: Feature A
