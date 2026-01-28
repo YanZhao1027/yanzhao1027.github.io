@@ -11,7 +11,6 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '开始阅读', link: '/novels/zhuri/zhuri1' }, // 指向你的第一章
-      { text: '休闲小游戏', link: '/artemis-demo.html'},
     ],
 
     // 侧边栏核心配置
