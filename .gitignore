@@ -1,0 +1,14 @@
+# 忽略依赖包
+node_modules/
+
+# 忽略 VitePress 运行时的缓存和生成的网页
+.vitepress/cache/
+.vitepress/dist/
+
+# 忽略 Mac 系统文件
+.DS_Store
+**/.DS_Store
+
+# 忽略临时文件
+*.log
+npm-debug.log*
