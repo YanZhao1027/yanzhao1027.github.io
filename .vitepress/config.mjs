@@ -11,7 +11,7 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '开始阅读', link: '/novels/zhuri/zhuri1' }, // 指向你的第一章
-      { text: '休闲小游戏', link: '/gamedemos/artemis-demo.html'},
+      { text: '休闲小游戏', link: '/artemis-demo.html'},
     ],
 
     // 侧边栏核心配置
@@ -37,7 +37,14 @@ export default defineConfig({
           { text: '三', link: '/novels/timemagic/timemagic3' },
           { text: '四', link: '/novels/timemagic/timemagic4' },
         ]
-      }
+      },
+      { 
+  text: '月神demo', 
+  link: '/artermis-demo.html',
+  // 强制浏览器将其视为外部链接或独立页面
+  target: '_self', 
+  rel: 'noopener'
+}
     ],
 
     // 社交链接图标
