@@ -10,7 +10,8 @@ export default defineConfig({
     // 顶部导航栏（可选）
     nav: [
       { text: '首页', link: '/' },
-      { text: '开始阅读', link: '/novels/zhuri/zhuri1' } // 指向你的第一章
+      { text: '开始阅读', link: '/novels/zhuri/zhuri1' }, // 指向你的第一章
+      { text: '休闲小游戏', link: '/gamedemos/artemis-demo.html'},
     ],
 
     // 侧边栏核心配置
