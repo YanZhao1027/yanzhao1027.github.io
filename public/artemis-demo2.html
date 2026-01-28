@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>月神 Moon God - v0.2 动作机制原型</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #d1d5db;
+            font-family: 'Noto Serif SC', serif;
+            overflow: hidden; /* 防止滚动 */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            transition: filter 0.3s ease;
+        }
+
+        canvas {
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            border-radius: 4px;
+        }
+
+        /* UI 层 */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .bar-container {
+            margin-bottom: 8px;
+            width: 300px;
+            max-width: 40vw;
+        }
+
+        .bar-label {
+            font-size: 12px;
+            margin-bottom: 2px;
+            text-shadow: 0 1px 2px black;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(50, 50, 50, 0.8);
+            border: 1px solid #444;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #hp-bar-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #8b0000, #ff4d4d);
+            transition: width 0.1s linear;
+        }
+
+        #moon-bar-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #2b6cb0, #63b3ed);
+            box-shadow: 0 0 10px #63b3ed;
+            transition: width 0.1s linear;
+        }
+
+        /* 新增体力条样式 */
+        #stamina-bar-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #d69e2e, #f6e05e); /* 黄色代表物理体力 */
+            box-shadow: 0 0 5px #f6e05e;
+            transition: width 0.05s linear;
+        }
+
+        #phase-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-align: right;
+        }
+
+        #phase-title {
+            font-size: 24px;
+            color: #e2e8f0;
+            text-shadow: 0 0 10px rgba(226, 232, 240, 0.5);
+        }
+
+        #phase-sub {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        #tutorial {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            text-shadow: 0 1px 2px black;
+            pointer-events: none;
+        }
+
+        #game-over {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        #game-over.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 10px 30px;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            pointer-events: auto; /* 确保按钮可点击 */
+        }
+
+        button:hover {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255,255,255,0.8);
+        }
+
+        /* 移动端控制 */
+        .mobile-controls {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            height: 150px;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        @media (hover: none) and (pointer: coarse) {
+            .mobile-controls { display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; }
+            #tutorial { bottom: 180px; }
+        }
+
+        .control-btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: rgba(255,255,255,0.6);
+            backdrop-filter: blur(4px);
+            margin: 0 5px;
+        }
+
+        .control-btn.active {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        /* 特殊按钮样式 */
+        #btn-dash {
+            border-color: #f6e05e;
+            color: #f6e05e;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui-layer">
+        <div class="bar-container">
+            <div class="bar-label">
+                <span>生命值 (Health)</span>
+                <span id="hp-text">100%</span>
+            </div>
+            <div class="bar-bg"><div id="hp-bar-fill"></div></div>
+        </div>
+        <div class="bar-container">
+            <div class="bar-label">
+                <span>月盈值 (Moon Essence)</span>
+                <span id="moon-text">100%</span>
+            </div>
+            <div class="bar-bg"><div id="moon-bar-fill"></div></div>
+        </div>
+        <!-- 新增体力条 -->
+        <div class="bar-container">
+            <div class="bar-label">
+                <span>体力值 (Stamina)</span>
+                <span id="stamina-text">100%</span>
+            </div>
+            <div class="bar-bg"><div id="stamina-bar-fill"></div></div>
+        </div>
+
+        <div id="phase-indicator">
+            <div id="phase-title">下弦月</div>
+            <div id="phase-sub">物理机能: 正常</div>
+        </div>
+
+        <div id="tutorial">
+            PC: [← →] 移动 | [空格] 跳跃 | [Shift/K] 冲刺 | 按住 [M] 开启月神形态<br>
+            Mobile: 左侧摇杆移动 | 右侧跳跃/冲刺 | 按住 [屏幕空白处] 开启月神形态
+        </div>
+    </div>
+
+    <div id="game-over">
+        <h1 id="end-title" style="color: #fff; font-size: 3rem; margin: 0;">你 逝 去 了</h1>
+        <p id="end-reason" style="color: #aaa; margin-top: 10px;">污秽吞噬了你的心智</p>
+        <!-- 增加 pointer-events 确保层级正确 -->
+        <button onclick="resetGame()">再次轮回</button>
+    </div>
+
+    <div class="mobile-controls">
+        <div class="control-group">
+            <div class="control-btn" id="btn-left">←</div>
+            <div class="control-btn" id="btn-right">→</div>
+        </div>
+        <div class="control-group">
+            <div class="control-btn" id="btn-dash">闪</div>
+            <div class="control-btn" id="btn-jump">跳</div>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * 核心配置
+ */
+const CONFIG = {
+    gravity: 0.6,
+    friction: 0.8,
+    moveSpeed: 5,
+    jumpForce: 12,
+    
+    // 月神机制
+    moonCost: 0.8,
+    moonRegen: 0.15,
+    filthDamage: 0.05,
+    healSpeed: 0.2,
+    filthOverlayAlpha: 0,
+    
+    // 【新】月神残留机制 (0.66秒 @ 60fps ≈ 40帧)
+    moonResidualFrames: 40,
+
+    // 体力/冲刺机制
+    dashForce: 15,          
+    dashDuration: 10,       
+    dashCost: 35,           
+    staminaRegen: 0.8,      
+    staminaDelay: 30        
+};
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let animationId;
+
+// 游戏状态
+let gameState = {
+    width: 800,
+    height: 450,
+    isMoonActive: false,
+    moonResidualTimer: 0, // 【新】残留计时器
+    isGameOver: false,
+    keys: {},
+    camera: { x: 0, y: 0 },
+    frameCount: 0
+};
+
+// 实体对象
+let player = {
+    x: 50, y: 200, w: 20, h: 40,
+    vx: 0, vy: 0,
+    
+    hp: 100, maxHp: 100,
+    moon: 100, maxMoon: 100,
+    
+    stamina: 100, maxStamina: 100,
+    staminaCooldownTimer: 0, 
+    isDashing: false,
+    dashTimer: 0,
+    facing: 1, 
+    
+    grounded: false
+};
+
+// 视觉残影数组
+let trail = [];
+
+// 关卡数据
+let platforms = [];
+let particles = [];
+
+function initLevel() {
+    platforms = [
+        // 起点安全区
+        { x: 0, y: 400, w: 300, h: 50, type: 0 },
+        
+        // 1. 基础冲刺教学
+        { x: 400, y: 400, w: 100, h: 50, type: 0 },
+        
+        // 2. 混合机制：隐形平台
+        { x: 600, y: 350, w: 80, h: 20, type: 1 }, 
+        
+        // 中继站
+        { x: 750, y: 300, w: 100, h: 20, type: 0 },
+        
+        // 3. 连续冲刺挑战
+        { x: 950, y: 280, w: 60, h: 10, type: 0 },
+        { x: 1100, y: 250, w: 60, h: 10, type: 0 }, 
+        
+        // 4. 资源博弈区 (这里现在可以用“频闪”技巧通过)
+        { x: 1300, y: 220, w: 50, h: 10, type: 1 },
+        { x: 1450, y: 220, w: 50, h: 10, type: 1 },
+        
+        // 陷阱海
+        { x: 900, y: 450, w: 800, h: 20, type: 3 }, 
+
+        // 终点
+        { x: 1650, y: 180, w: 40, h: 40, type: 2 } 
+    ];
+}
+
+function resize() {
+    let aspect = 16/9;
+    let windowAspect = window.innerWidth / window.innerHeight;
+    if (windowAspect > aspect) {
+        gameState.height = Math.min(600, window.innerHeight * 0.9);
+        gameState.width = gameState.height * aspect;
+    } else {
+        gameState.width = Math.min(1000, window.innerWidth * 0.95);
+        gameState.height = gameState.width / aspect;
+    }
+    canvas.width = gameState.width;
+    canvas.height = gameState.height;
+}
+
+/**
+ * 核心逻辑循环
+ */
+function update() {
+    gameState.frameCount++;
+    if (gameState.isGameOver) return;
+
+    // --- 1. 状态管理 ---
+    
+    // M 键逻辑 (月神形态)
+    let wantsMoon = gameState.keys['m'] || gameState.keys['mousedown'];
+    
+    if (wantsMoon && player.moon > 0) {
+        gameState.isMoonActive = true;
+        // 激活时，残留时间保持最大值
+        gameState.moonResidualTimer = CONFIG.moonResidualFrames;
+        
+        // 消耗逻辑
+        player.moon = Math.max(0, player.moon - CONFIG.moonCost);
+        if (player.hp < player.maxHp) player.hp = Math.min(player.maxHp, player.hp + CONFIG.healSpeed);
+    } else {
+        gameState.isMoonActive = false;
+        
+        // 【新】残留时间递减
+        if (gameState.moonResidualTimer > 0) {
+            gameState.moonResidualTimer--;
+        }
+        
+        // 恢复逻辑
+        player.moon = Math.min(player.maxMoon, player.moon + CONFIG.moonRegen);
+        player.hp -= CONFIG.filthDamage;
+    }
+
+    // --- 2. 移动与冲刺逻辑 ---
+    let moveDir = 0;
+    if (gameState.keys['ArrowLeft'] || gameState.keys['a']) moveDir = -1;
+    if (gameState.keys['ArrowRight'] || gameState.keys['d']) moveDir = 1;
+    
+    if (moveDir !== 0 && !player.isDashing) {
+        player.facing = moveDir;
+    }
+
+    let wantsDash = gameState.keys['Shift'] || gameState.keys['k'] || gameState.keys['dash'];
+    
+    if (wantsDash && !player.isDashing && player.stamina >= CONFIG.dashCost && !gameState.keys['dashLocked']) {
+        player.isDashing = true;
+        player.dashTimer = CONFIG.dashDuration;
+        player.stamina -= CONFIG.dashCost;
+        player.staminaCooldownTimer = CONFIG.staminaDelay; 
+        gameState.keys['dashLocked'] = true; 
+        addTrail();
+    }
+    
+    if (!wantsDash) {
+        gameState.keys['dashLocked'] = false;
+    }
+
+    // --- 3. 物理计算 ---
+    if (player.isDashing) {
+        player.vx = player.facing * CONFIG.dashForce; 
+        player.vy = 0; 
+        player.dashTimer--;
+        if (gameState.frameCount % 2 === 0) addTrail();
+        if (player.dashTimer <= 0) {
+            player.isDashing = false;
+            player.vx *= 0.5; 
+        }
+    } else {
+        player.vx += moveDir; 
+        player.vx *= CONFIG.friction; 
+        player.vy += CONFIG.gravity; 
+        
+        if ((gameState.keys['ArrowUp'] || gameState.keys['w'] || gameState.keys[' ']) && player.grounded) {
+            player.vy = -CONFIG.jumpForce;
+            player.grounded = false;
+        }
+    }
+
+    if (player.staminaCooldownTimer > 0) {
+        player.staminaCooldownTimer--;
+    } else {
+        player.stamina = Math.min(player.maxStamina, player.stamina + CONFIG.staminaRegen);
+    }
+
+    player.x += player.vx;
+    player.y += player.vy;
+    
+    if (player.y > 1000) player.hp = 0;
+
+    // --- 4. 碰撞检测 ---
+    player.grounded = false;
+    
+    // 【新】计算平台是否实体化：月神激活 OR 残留时间大于0
+    let isPlatformActive = gameState.isMoonActive || gameState.moonResidualTimer > 0;
+
+    platforms.forEach(plat => {
+        // 如果是隐形平台，且未激活（既没按M也没残留），则无碰撞
+        if (plat.type === 1 && !isPlatformActive) return;
+
+        if (player.x < plat.x + plat.w &&
+            player.x + player.w > plat.x &&
+            player.y < plat.y + plat.h &&
+            player.y + player.h > plat.y) {
+            
+            if (plat.type === 3) {
+                player.hp -= 2;
+            } else if (plat.type === 2) {
+                winGame();
+            } else {
+                let prevY = player.y - player.vy;
+                if (prevY + player.h <= plat.y + CONFIG.gravity + Math.abs(player.vy)) { 
+                    player.y = plat.y - player.h;
+                    player.vy = 0;
+                    player.grounded = true;
+                }
+            }
+        }
+    });
+
+    if (player.hp <= 0) gameOver("你的灵魂消散在黑暗中...");
+    if (player.moon <= 0 && gameState.keys['m']) gameState.isMoonActive = false;
+
+    let targetCamX = player.x - gameState.width / 3;
+    gameState.camera.x += (targetCamX - gameState.camera.x) * 0.1;
+    let targetCamY = player.y - gameState.height / 2;
+    gameState.camera.y += (targetCamY - gameState.camera.y) * 0.1;
+    if (gameState.camera.y > 100) gameState.camera.y = 100;
+
+    updateParticles();
+    updateTrail();
+}
+
+/**
+ * 残影系统
+ */
+function addTrail() {
+    trail.push({
+        x: player.x,
+        y: player.y,
+        alpha: 0.8,
+        life: 15 
+    });
+}
+function updateTrail() {
+    for (let i = trail.length - 1; i >= 0; i--) {
+        trail[i].alpha -= 0.05;
+        trail[i].life--;
+        if (trail[i].life <= 0) trail.splice(i, 1);
+    }
+}
+
+/**
+ * 渲染逻辑
+ */
+function draw() {
+    // 1. 背景
+    if (gameState.isMoonActive) {
+        ctx.fillStyle = '#0f172a';
+        CONFIG.filthOverlayAlpha = Math.max(0, CONFIG.filthOverlayAlpha - 0.05);
+    } else {
+        ctx.fillStyle = '#111';
+        CONFIG.filthOverlayAlpha = Math.min(0.6, CONFIG.filthOverlayAlpha + 0.002);
+    }
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+    ctx.translate(-gameState.camera.x, -gameState.camera.y);
+
+    drawParticles();
+
+    // 2. 绘制残影
+    trail.forEach(t => {
+        ctx.fillStyle = `rgba(246, 224, 94, ${t.alpha})`; 
+        ctx.fillRect(t.x, t.y, player.w, player.h);
+    });
+
+    // 3. 绘制平台
+    platforms.forEach(plat => {
+        if (plat.type === 1) { // 隐形平台
+            
+            // 【新】计算平台透明度
+            let alpha = 0;
+            if (gameState.isMoonActive) {
+                alpha = 1;
+            } else if (gameState.moonResidualTimer > 0) {
+                // 线性减弱
+                alpha = gameState.moonResidualTimer / CONFIG.moonResidualFrames;
+            }
+
+            if (alpha > 0) {
+                // 显形状态 (支持半透明)
+                ctx.fillStyle = `rgba(226, 232, 240, ${alpha})`;
+                ctx.shadowBlur = 15 * alpha;
+                ctx.shadowColor = `rgba(99, 179, 237, ${alpha})`;
+                ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+                ctx.shadowBlur = 0;
+            } else {
+                // 完全隐形 (画虚线)
+                ctx.strokeStyle = '#333';
+                ctx.setLineDash([5, 5]);
+                ctx.strokeRect(plat.x, plat.y, plat.w, plat.h);
+                ctx.setLineDash([]);
+            }
+
+        } else if (plat.type === 2) { // 终点
+            ctx.fillStyle = '#fcd34d';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#fcd34d';
+            ctx.beginPath();
+            ctx.arc(plat.x + plat.w/2, plat.y + plat.h/2, 20, 0, Math.PI*2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        } else if (plat.type === 3) { // 陷阱
+            ctx.fillStyle = '#450a0a';
+            ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+            ctx.fillStyle = '#7f1d1d';
+            for(let i=0; i<plat.w; i+=20) {
+                ctx.beginPath();
+                ctx.moveTo(plat.x + i, plat.y + plat.h);
+                ctx.lineTo(plat.x + i + 10, plat.y);
+                ctx.lineTo(plat.x + i + 20, plat.y + plat.h);
+                ctx.fill();
+            }
+        } else { // 普通
+            ctx.fillStyle = '#222';
+            ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+        }
+    });
+
+    // 4. 绘制玩家
+    if (gameState.isMoonActive) {
+        ctx.fillStyle = '#fff';
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#fff';
+    } else if (player.isDashing) {
+        ctx.fillStyle = '#f6e05e'; 
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#f6e05e';
+    } else {
+        ctx.fillStyle = '#888';
+        ctx.shadowBlur = 0;
+    }
+    
+    ctx.fillRect(player.x, player.y, player.w, player.h);
+    
+    ctx.fillStyle = '#000';
+    let eyeW = player.isDashing ? 8 : 4;
+    if (player.facing > 0) ctx.fillRect(player.x + 12, player.y + 8, eyeW, 4);
+    else ctx.fillRect(player.x + 4, player.y + 8, eyeW, 4);
+
+    ctx.restore();
+
+    // 5. 屏幕特效
+    if (!gameState.isMoonActive) {
+        let grad = ctx.createRadialGradient(
+            canvas.width/2, canvas.height/2, canvas.height/3, 
+            canvas.width/2, canvas.height/2, canvas.height
+        );
+        grad.addColorStop(0, `rgba(0,0,0,0)`);
+        grad.addColorStop(1, `rgba(0,0,0,${CONFIG.filthOverlayAlpha})`);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+    } else {
+        ctx.fillStyle = 'rgba(200, 230, 255, 0.1)';
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+    }
+}
+
+// ... existing particles code ...
+function createParticles() {
+    for (let i = 0; i < 50; i++) {
+        particles.push({
+            x: Math.random() * 2000,
+            y: Math.random() * 1000,
+            size: Math.random() * 2,
+            speedY: Math.random() * 0.5 + 0.1
+        });
+    }
+}
+function updateParticles() {
+    particles.forEach(p => {
+        p.y += gameState.isMoonActive ? -p.speedY*2 : p.speedY;
+        if (p.y > 1000) p.y = 0;
+        if (p.y < -100) p.y = 1000;
+    });
+}
+function drawParticles() {
+    ctx.fillStyle = gameState.isMoonActive ? 'rgba(255,255,255,0.5)' : 'rgba(100,100,100,0.3)';
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
+/**
+ * UI 更新
+ */
+function updateUI() {
+    const hpPercent = (player.hp / player.maxHp) * 100;
+    const moonPercent = (player.moon / player.maxMoon) * 100;
+    const staminaPercent = (player.stamina / player.maxStamina) * 100;
+
+    document.getElementById('hp-bar-fill').style.width = `${Math.max(0, hpPercent)}%`;
+    document.getElementById('hp-text').innerText = `${Math.floor(Math.max(0, hpPercent))}%`;
+    
+    document.getElementById('moon-bar-fill').style.width = `${Math.max(0, moonPercent)}%`;
+    document.getElementById('moon-text').innerText = `${Math.floor(Math.max(0, moonPercent))}%`;
+    
+    document.getElementById('stamina-bar-fill').style.width = `${Math.max(0, staminaPercent)}%`;
+    document.getElementById('stamina-text').innerText = `${Math.floor(Math.max(0, staminaPercent))}%`;
+
+    if (player.stamina < CONFIG.dashCost) {
+        document.getElementById('stamina-bar-fill').style.background = '#555';
+        document.getElementById('btn-dash').style.borderColor = '#555';
+        document.getElementById('btn-dash').style.color = '#555';
+    } else {
+        document.getElementById('stamina-bar-fill').style.background = 'linear-gradient(90deg, #d69e2e, #f6e05e)';
+        document.getElementById('btn-dash').style.borderColor = '#f6e05e';
+        document.getElementById('btn-dash').style.color = '#f6e05e';
+    }
+}
+
+// 辅助函数
+function loop() {
+    update();
+    draw();
+    updateUI();
+    if (!gameState.isGameOver) {
+        animationId = requestAnimationFrame(loop);
+    }
+}
+function gameOver(reason) {
+    gameState.isGameOver = true;
+    document.getElementById('end-title').innerText = "你 逝 去 了";
+    document.getElementById('end-reason').innerText = reason;
+    document.getElementById('game-over').classList.add('active');
+    cancelAnimationFrame(animationId);
+}
+function winGame() {
+    gameState.isGameOver = true;
+    document.getElementById('end-title').innerText = "月 相 轮 转";
+    document.getElementById('end-reason').innerText = "你成功抵达了彼岸。";
+    document.getElementById('game-over').classList.add('active');
+    cancelAnimationFrame(animationId);
+}
+function resetGame() {
+    // 【关键修复】强制让当前聚焦的元素（按钮）失去焦点
+    // 这样按下空格键就不会再次触发按钮的点击事件，而是触发游戏的跳跃逻辑
+    if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+    }
+
+    player.x = 50; player.y = 200;
+    player.vx = 0; player.vy = 0;
+    player.hp = 100; player.moon = 100; player.stamina = 100;
+    
+    player.isDashing = false;
+    player.dashTimer = 0;
+    player.staminaCooldownTimer = 0;
+    gameState.keys['dashLocked'] = false;
+    
+    gameState.moonResidualTimer = 0;
+
+    gameState.isGameOver = false;
+    gameState.camera.x = 0;
+    document.getElementById('game-over').classList.remove('active');
+    
+    cancelAnimationFrame(animationId); 
+    loop();
+}
+
+/**
+ * 输入监听
+ */
+window.addEventListener('keydown', e => {
+    // 【优化】防止空格键和方向键触发浏览器的默认滚动或按钮行为
+    if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+        e.preventDefault();
+    }
+
+    gameState.keys[e.key] = true;
+    if (e.key === 'm' || e.key === 'M') gameState.keys['m'] = true;
+});
+window.addEventListener('keyup', e => {
+    gameState.keys[e.key] = false;
+    if (e.key === 'm' || e.key === 'M') gameState.keys['m'] = false;
+    if (e.key === 'Shift' || e.key === 'k') gameState.keys['dashLocked'] = false; 
+});
+
+window.addEventListener('mousedown', () => gameState.keys['mousedown'] = true);
+window.addEventListener('mouseup', () => gameState.keys['mousedown'] = false);
+window.addEventListener('touchstart', (e) => {
+    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+        return;
+    }
+
+    e.preventDefault(); 
+    let touchY = e.touches[0].clientY;
+    if (touchY < window.innerHeight - 150) {
+        gameState.keys['mousedown'] = true;
+    }
+}, {passive: false});
+window.addEventListener('touchend', () => gameState.keys['mousedown'] = false);
+
+function bindTouch(id, key) {
+    const el = document.getElementById(id);
+    el.addEventListener('touchstart', (e) => { 
+        e.preventDefault(); e.stopPropagation(); 
+        gameState.keys[key] = true; 
+        el.classList.add('active');
+        if(key === 'dash') gameState.keys['dashLocked'] = false; 
+    });
+    el.addEventListener('touchend', (e) => { 
+        e.preventDefault(); e.stopPropagation(); 
+        gameState.keys[key] = false; 
+        el.classList.remove('active');
+    });
+}
+bindTouch('btn-left', 'ArrowLeft');
+bindTouch('btn-right', 'ArrowRight');
+bindTouch('btn-jump', 'ArrowUp');
+bindTouch('btn-dash', 'dash');
+
+window.onload = () => { resize(); initLevel(); createParticles(); loop(); };
+window.onresize = resize;
+
+</script>
+</body>
+</html>
