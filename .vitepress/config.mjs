@@ -10,7 +10,7 @@ export default defineConfig({
     // 顶部导航栏（可选）
     nav: [
       { text: '首页', link: '/' },
-      { text: '开始阅读', link: '/novels/zhuri/zhuri1' }, // 指向你的第一章
+      { text: '开始阅读', link: '/novels/apolloforged/apolloforged1' }, // 指向你的第一章
     ],
 
     // 侧边栏核心配置
@@ -20,10 +20,10 @@ export default defineConfig({
         collapsed: false,      // 是否默认折叠
         items: [
           // 这里填你的文件名，link 对应文件路径（不需要写 .md）
-          { text: '一', link: '/novels/zhuri/zhuri1' },
-          { text: '二', link: '/novels/zhuri/zhuri2' },
-          { text: '三', link: '/novels/zhuri/zhuri3' },
-          { text: '四', link: '/novels/zhuri/zhuri4' },
+          { text: '一', link: '/novels/apolloforged/apolloforged1' },
+          { text: '二', link: '/novels/apolloforged/apolloforged2' },
+          { text: '三', link: '/novels/apolloforged/apolloforged3' },
+          { text: '四', link: '/novels/apolloforged/apolloforged4' },
         ]
       },
       {
