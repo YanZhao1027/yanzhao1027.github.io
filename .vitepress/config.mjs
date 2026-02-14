@@ -24,6 +24,7 @@ export default defineConfig({
           { text: '二', link: '/novels/apolloforged/apolloforged2' },
           { text: '三', link: '/novels/apolloforged/apolloforged3' },
           { text: '四', link: '/novels/apolloforged/apolloforged4' },
+          { text: '感言', link: '/novels/apolloforged/apolloforged-afterstory' },
         ]
       },
       {
