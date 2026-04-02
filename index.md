@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "赵岩｜个人小站"
   text: "于是我仍旧栽种玫瑰。"
-  tagline: My great project tagline
+  tagline: 《铸日》《时间魔法》/月神
   # actions:
   #   - theme: brand
   #     text: Markdown Examples
