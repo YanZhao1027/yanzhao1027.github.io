@@ -10,7 +10,7 @@ title: 电脑选购 | 5步决策指南
 
 <div style="position: relative; width: 100%; height: 80vh; min-height: 500px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: #000;">
   <iframe 
-    src="/pcselector.html" 
+    src="/pcselector2.html" 
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
     allow="autoplay; fullscreen"
     allowfullscreen>
