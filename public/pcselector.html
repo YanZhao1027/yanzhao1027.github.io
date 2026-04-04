@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电脑选购 | 5步决策指南</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 6px;
+            background-color: #E5E7EB;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .step.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        p.desc {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+        button {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #E5E7EB;
+            background-color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+        button:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background-color: #F8FAFC;
+        }
+        /* 新增：需求汇总清单的样式 */
+        .summary-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #F1F5F9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #E2E8F0;
+        }
+        .summary-item {
+            background: #FFFFFF;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .icon-yes { color: #10B981; font-weight: 900; font-size: 1.1rem; } /* 绿色对勾 */
+        .icon-no { color: #EF4444; font-weight: 900; font-size: 1.1rem; }  /* 红色叉叉 */
+        
+        .result-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .spec-item {
+            display: flex;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #CBD5E1;
+            padding-bottom: 10px;
+        }
+        .spec-label {
+            font-weight: bold;
+            width: 80px;
+            color: var(--primary);
+        }
+        .spec-value {
+            flex: 1;
+            color: #334155;
+        }
+        .restart-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .restart-btn:hover {
+            background-color: var(--primary-hover);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <div class="step active" id="step1">
+        <h2>问题 1/5：有剪视频、修图需求吗？</h2>
+        <p class="desc">包括使用 Premiere, After Effects, Photoshop, Lightroom 等专业创作软件。</p>
+        <div class="btn-group">
+            <button onclick="answer(1, true)">有需求 (Yes)</button>
+            <button onclick="answer(1, false)">没需求 (No)</button>
+        </div>
+    </div>
+
+    <div class="step" id="step2">
+        <h2>问题 2/5：有玩游戏需求吗？</h2>
+        <p class="desc">指在电脑上运行 3A 大作或主流电竞游戏（如赛博朋克2077、黑神话：悟空、CS2、无畏契约等）。</p>
+        <div class="btn-group">
+            <button onclick="answer(2, true)">有需求 (Yes)</button>
+            <button onclick="answer(2, false)">没需求 (No)</button>
+        </div>
+    </div>
+
+    <div class="step" id="step3">
+        <h2>问题 3/5：有离电续航需求吗？</h2>
+        <p class="desc">需要在找不到插座的课堂、会议室、咖啡厅等场景使用半天以上。</p>
+        <div class="btn-group">
+            <button onclick="answer(3, true)">有需求 (Yes)</button>
+            <button onclick="answer(3, false)">没需求 (No)</button>
+        </div>
+    </div>
+
+    <div class="step" id="step4">
+        <h2>问题 4/5：有频繁携带需求吗？</h2>
+        <p class="desc">需要在旅行、出差、日常通勤的地铁/公交中频繁背在包里。</p>
+        <div class="btn-group">
+            <button onclick="answer(4, true)">有需求 (Yes)</button>
+            <button onclick="answer(4, false)">没需求 (No)</button>
+        </div>
+    </div>
+
+    <div class="step" id="step5">
+        <h2>问题 5/5：有本地部署AI模型需求吗？</h2>
+        <p class="desc">需要在本地运行大语言模型(Ollama/Llama3)、AI画图(Stable Diffusion)或进行深度学习训练。</p>
+        <div class="btn-group">
+            <button onclick="answer(5, true)">有需求 (Yes)</button>
+            <button onclick="answer(5, false)">没需求 (No)</button>
+        </div>
+    </div>
+
+    <div class="step" id="result">
+        <h2>🎯 你的专属电脑推荐方案</h2>
+        
+        <div class="summary-box" id="summary-box">
+            </div>
+        
+        <div class="result-card">
+            <h3 id="rec-title" style="margin-top:0; color: #1E293B;">加载中...</h3>
+            
+            <div class="spec-item">
+                <div class="spec-label">设备形态</div>
+                <div class="spec-value" id="rec-form">...</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-label">推荐阵营</div>
+                <div class="spec-value" id="rec-os">...</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-label">核心芯片</div>
+                <div class="spec-value" id="rec-cpu">...</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-label">显卡要求</div>
+                <div class="spec-value" id="rec-gpu">...</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-label">内存要求</div>
+                <div class="spec-value" id="rec-ram">...</div>
+            </div>
+            
+            <p style="margin-top: 15px; font-size: 0.9rem; color: #64748B; line-height: 1.5;" id="rec-reason">...</p>
+        </div>
+
+        <p style="text-align: center; font-size: 0.85rem; color: #9CA3AF; margin-top: 20px;">
+            💡 选购方案已生成，可以截图本页面保存并分享。
+        </p>
+
+        <button class="restart-btn" onclick="location.reload()">重新测试</button>
+    </div>
+
+</div>
+
+<script>
+    // 存储用户选择
+    const userAnswers = {
+        edit: false,
+        game: false,
+        battery: false,
+        port: false,
+        ai: false
+    };
+
+    function answer(stepNum, val) {
+        // 记录数据
+        if(stepNum === 1) userAnswers.edit = val;
+        if(stepNum === 2) userAnswers.game = val;
+        if(stepNum === 3) userAnswers.battery = val;
+        if(stepNum === 4) userAnswers.port = val;
+        if(stepNum === 5) userAnswers.ai = val;
+
+        // 隐藏当前步，显示下一步
+        document.getElementById('step' + stepNum).classList.remove('active');
+        
+        // 更新进度条
+        document.getElementById('progress').style.width = (stepNum / 5) * 100 + '%';
+
+        if (stepNum < 5) {
+            document.getElementById('step' + (stepNum + 1)).classList.add('active');
+        } else {
+            document.getElementById('result').classList.add('active');
+            calculateResult();
+        }
+    }
+
+    function calculateResult() {
+        const { edit, game, battery, port, ai } = userAnswers;
+
+        // ==========================================
+        // 新增：生成顶部需求核对清单
+        // ==========================================
+        const summaryConfig = [
+            { key: 'edit', label: '剪视频/修图' },
+            { key: 'game', label: '游戏需求' },
+            { key: 'battery', label: '离电续航' },
+            { key: 'port', label: '频繁携带' },
+            { key: 'ai', label: '本地AI部署' }
+        ];
+        
+        let summaryHTML = '';
+        summaryConfig.forEach(item => {
+            const isYes = userAnswers[item.key];
+            const icon = isYes ? '<span class="icon-yes">✓</span>' : '<span class="icon-no">×</span>';
+            summaryHTML += `<div class="summary-item">${icon} ${item.label}</div>`;
+        });
+        document.getElementById('summary-box').innerHTML = summaryHTML;
+
+
+        // ==========================================
+        // 核心逻辑判断
+        // ==========================================
+        const isMobile = battery || port; // 只要有续航或便携需求，必须选笔记本
+        let rTitle = "", rForm = "", rOs = "", rCpu = "", rGpu = "", rRam = "", rReason = "";
+
+        if (isMobile) {
+            rForm = "💻 笔记本电脑";
+            if (game && ai) {
+                rTitle = "旗舰级 AI 游戏本";
+                rOs = "Windows";
+                rCpu = "Intel Core i9 或 AMD Ryzen 9";
+                rGpu = "Nvidia RTX 4080 / 4090 移动版 (极其重要，需大显存)";
+                rRam = "32GB 或 64GB";
+                rReason = "由于你既要移动，又要打游戏和跑AI，Mac被游戏排除，轻薄本被AI排除。你只能选择搭载高端N卡的厚重旗舰游戏本（注意：续航可能无法满足极高要求，建议带电源）。";
+            } else if (game && !ai) {
+                rTitle = "主流游戏本";
+                rOs = "Windows";
+                rCpu = "Intel Core i7 或 AMD Ryzen 7";
+                rGpu = "Nvidia RTX 4060 / 4070 移动版";
+                rRam = "16GB 或 32GB";
+                rReason = "游戏刚需排除了Mac阵营。由于没有本地AI需求，RTX 4060级别的显卡已具备极高性价比。";
+            } else if (!game && ai) {
+                rTitle = "大内存 MacBook Pro / 顶级全能本";
+                rOs = "macOS (跑LLM优先) 或 Windows (跑生图优先)";
+                rCpu = "Apple M3/M4 Max 或 Intel Core Ultra 9";
+                rGpu = "Apple 核显 (依赖统一内存) 或 Nvidia RTX 4080";
+                rRam = "至少 64GB 统一内存 (Mac) 或 32GB以上 (Win)";
+                rReason = "本地部署大语言模型非常吃显存容量，Mac的统一内存架构（CPU/GPU共享内存）是目前性价比最高的大模型移动推理方案。如果主攻Stable Diffusion画图，则建议买带RTX显卡的Windows高端创作本。";
+            } else if (edit && !game && !ai) {
+                rTitle = "轻薄创作本 / MacBook Pro (标准版)";
+                rOs = "macOS (推荐) 或 Windows";
+                rCpu = "Apple M3/M4 Pro 或 Intel Core Ultra 7";
+                rGpu = "Apple 核显 或 Nvidia RTX 4050/4060";
+                rRam = "16GB 或 32GB";
+                rReason = "剪辑修图对屏幕色彩和CPU解码能力要求高，MacBook Pro是行业标杆；若习惯Windows，可选择带有RTX入门显卡的高端全能本（如ROG幻系列、XPS等）。";
+            } else { // 纯日常轻度
+                rTitle = "极致轻薄本 / 商务本";
+                rOs = "Windows 或 macOS (依个人喜好)";
+                rCpu = "Intel Core Ultra 5 / AMD Ryzen 7 / Apple M3";
+                rGpu = "集成核显即可";
+                rRam = "16GB 即可";
+                rReason = "没有游戏、重度剪辑和AI需求，把钱花在屏幕、做工、键盘手感和极致便携上。MacBook Air 或 Windows Evo 认证轻薄本是最佳选择。";
+            }
+        } else {
+            // 台式机分支
+            rForm = "🖥️ 台式机 / 迷你主机";
+            if (game && ai) {
+                rTitle = "发烧级 AI 游戏主机";
+                rOs = "Windows";
+                rCpu = "Intel Core i9 或 AMD Ryzen 7 7800X3D";
+                rGpu = "Nvidia RTX 4090 或 4080 Super (至少16GB-24GB显存)";
+                rRam = "64GB DDR5";
+                rReason = "无需考虑便携性，直接将性能拉满！RTX 4090 是当前消费级跑AI和4K游戏的天花板。";
+            } else if (game && !ai) {
+                rTitle = "高性价比游戏组装机";
+                rOs = "Windows";
+                rCpu = "Intel Core i5/i7 或 AMD Ryzen 5/7";
+                rGpu = "Nvidia RTX 4070系列 或 AMD RX 7800 XT";
+                rRam = "32GB DDR5";
+                rReason = "无需给AI大显存交溢价，主攻游戏性能，2K/4K分辨率下畅玩主流大作。";
+            } else if (!game && ai) {
+                rTitle = "AI 专属工作站 / Mac Studio";
+                rOs = "Ubuntu Linux / Windows 或 macOS";
+                rCpu = "AMD 线程撕裂者 / Intel i9 或 Apple M2/M3 Ultra";
+                rGpu = "双路/多路 RTX 4090 或 Apple 128GB+ 统一大内存";
+                rRam = "128GB 及以上";
+                rReason = "作为纯粹的AI算力中心，做推理推荐购买 128GB 以上内存的 Mac Studio；做模型微调/画图推荐组装多张英伟达显卡的 Linux 工作站。";
+            } else if (edit && !game && !ai) {
+                rTitle = "生产力台式机 / Mac mini";
+                rOs = "macOS (极度推荐) 或 Windows";
+                rCpu = "Apple M4 Pro 或 Intel Core i7";
+                rGpu = "Apple 核显 或 Nvidia RTX 4060";
+                rRam = "32GB";
+                rReason = "视频剪辑神器。新款 Mac mini 搭配 Pro 芯片能提供极其恐怖的生产力性价比；Windows组装机则胜在硬盘扩容成本极低。";
+            } else {
+                rTitle = "办公迷你主机 (Mini PC)";
+                rOs = "Windows 或 macOS";
+                rCpu = "Intel Core i5 / AMD Ryzen 5 或 Apple M4";
+                rGpu = "集成核显";
+                rRam = "16GB";
+                rReason = "仅有基础办公和网页浏览需求。一台巴掌大小的迷你主机（如零刻、基础款 Mac mini）挂在显示器后面，桌面极其整洁且性价比最高。";
+            }
+        }
+
+        // 渲染结果
+        document.getElementById('rec-title').innerText = rTitle;
+        document.getElementById('rec-form').innerText = rForm;
+        document.getElementById('rec-os').innerText = rOs;
+        document.getElementById('rec-cpu').innerText = rCpu;
+        document.getElementById('rec-gpu').innerText = rGpu;
+        document.getElementById('rec-ram').innerText = rRam;
+        document.getElementById('rec-reason').innerText = rReason;
+    }
+</script>
+
+</body>
+</html>

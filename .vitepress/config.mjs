@@ -43,6 +43,10 @@ export default defineConfig({
       { 
   text: '月神demo', 
   link: '/artemis-play'
+},
+      { 
+  text: '电脑选择五步走', 
+  link: '/pcselector'
 }
     ],
 
