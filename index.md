@@ -12,9 +12,9 @@ hero:
       link: /novels/apolloforged/apolloforged1.md
     - theme: alt
       text: 电脑五步选
-      link: /pcselector
-      # target: _blank  # <--- 核心：在这里单独写 target
-      # rel: external   # <--- 确保它跳出单页应用框架
+      link: /pcselector2
+      target: _self  # <--- 核心：在这里单独写 target
+      rel: external   # <--- 确保它跳出单页应用框架
 
 # features:
 #  - title: Feature A

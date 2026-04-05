@@ -46,8 +46,10 @@ export default defineConfig({
 },
       { 
   text: '电脑选择五步走', 
-  link: '/pcselector'
-}
+  link: '/pcselector2.html',
+  target: '_self',
+  rel: 'external'
+},
     ],
 
     // 社交链接图标
