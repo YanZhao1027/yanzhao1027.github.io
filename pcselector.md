@@ -20,4 +20,4 @@ title: 电脑选购 | 5步决策指南
 ---
 
 
-[点击此处进入全屏纯净模式](/pcselector.html){target="_self"}
+[点击此处进入全屏纯净模式](/pcselector2.html){target="_self"}
