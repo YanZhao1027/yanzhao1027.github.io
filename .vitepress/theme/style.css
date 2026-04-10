@@ -1,0 +1,44 @@
+/* ----------------------------------
+   亮色模式配置 (Light Mode) 
+---------------------------------- */
+:root {
+  /* 全局主色调（文本链接、高亮等）：使用深绿色 */
+  --vp-c-brand-1: #226B2D; 
+  --vp-c-brand-2: #2A8538; 
+  --vp-c-brand-3: #33A144; 
+  --vp-c-brand-soft: rgba(34, 107, 45, 0.14);
+
+  /* 亮色模式下的主按钮颜色（默认跟随主色调，不用特意改，深绿底+白字很好看） */
+}
+
+/* ----------------------------------
+   暗色模式配置 (Dark Mode) 
+---------------------------------- */
+.dark {
+  /* 全局主色调（文本链接、高亮等）：为了在黑底上看清，保持为浅绿色 */
+  --vp-c-brand-1: #95D58C; 
+  --vp-c-brand-2: #B0E4A8; 
+  --vp-c-brand-3: #CBF2C6; 
+  --vp-c-brand-soft: rgba(149, 213, 140, 0.16);
+
+  /* 
+   👇 这里是修复过亮按钮的关键代码 👇
+   强制覆盖暗色模式下主按钮（Brand Button）的颜色，使其变暗
+  */
+  
+  /* 按钮背景：改回深绿色 */
+  --vp-button-brand-bg: #226B2D; 
+  /* 按钮边框：同上 */
+  --vp-button-brand-border: #226B2D; 
+  /* 按钮文字：白色 */
+  --vp-button-brand-text: #ffffff; 
+  
+  /* 鼠标悬浮时的按钮颜色（稍微提亮一点点深绿色） */
+  --vp-button-brand-hover-bg: #2A8538; 
+  --vp-button-brand-hover-border: #2A8538;
+  --vp-button-brand-hover-text: #ffffff;
+
+  /* 点击时的按钮颜色 */
+  --vp-button-brand-active-bg: #33A144; 
+  --vp-button-brand-active-border: #33A144;
+}

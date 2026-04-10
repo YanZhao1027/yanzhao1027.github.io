@@ -2,10 +2,17 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "赵岩｜个人小站",
+  title: "梧桐｜个人小站",
   description: "于是我仍旧栽种玫瑰。",
+
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/firmiana-mid.svg' }]
+  ],
+
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+
+    logo: '/firmiana-mid.svg',
     
     // 顶部导航栏（可选）
     nav: [

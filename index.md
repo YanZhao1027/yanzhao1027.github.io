@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "赵岩｜个人小站"
+  name: "梧桐｜Firmiana"
   text: "于是我仍旧栽种玫瑰。"
   tagline: 《铸日》《时间魔法》/月神
   actions:
