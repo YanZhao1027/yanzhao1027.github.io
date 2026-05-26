@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "梧桐｜Firmiana"
   text: "于是我仍旧栽种玫瑰。"
-  tagline: 《铸日》《时间魔法》/月神
+  tagline: 《铸日》《时间魔法》/ 《月神(demo)》
   actions:
     - theme: brand
       text: 开始阅读《铸日》
@@ -15,6 +15,11 @@ hero:
       link: /pcselector2
       target: _self  # <--- 核心：在这里单独写 target
       rel: external   # <--- 确保它跳出单页应用框架
+    - theme: alt
+      text: CLIX
+      link: /clix-presentation
+      target: _self  # <--- 核心：在这里单独写 target
+      rel: external 
 
 # features:
 #  - title: Feature A
