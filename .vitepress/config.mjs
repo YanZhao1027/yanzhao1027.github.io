@@ -53,6 +53,7 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: '两任', link: '/notions/two-exes' },
+          { text: '诺亚方舟', link: '/notions/noah-ark' },
         ]
       },
       { 
