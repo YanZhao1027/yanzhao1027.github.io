@@ -18,6 +18,7 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '开始阅读', link: '/novels/apolloforged/apolloforged1' }, // 指向你的第一章
+      { text: '随想', link: '/notions/two-exes' },
     ],
 
     // 侧边栏核心配置
@@ -47,6 +48,13 @@ export default defineConfig({
           { text: '五 时间魔法', link: '/novels/timemagic/timemagic5' },
         ]
       },
+      {
+        text: '随想',
+        collapsed: false,
+        items: [
+          { text: '两任', link: '/notions/two-exes' },
+        ]
+      },
       { 
   text: '月神demo', 
   link: '/artemis-play'
@@ -65,4 +73,3 @@ export default defineConfig({
     ]
   }
 })
- 

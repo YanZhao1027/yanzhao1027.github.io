@@ -11,6 +11,9 @@ hero:
       text: 开始阅读《铸日》
       link: /novels/apolloforged/apolloforged1.md
     - theme: alt
+      text: 进入「随想」
+      link: /notions/two-exes.md
+    - theme: alt
       text: 电脑五步选
       link: /pcselector2
       target: _self  # <--- 核心：在这里单独写 target
@@ -29,4 +32,3 @@ hero:
 #  - title: Feature C
 #    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
-
