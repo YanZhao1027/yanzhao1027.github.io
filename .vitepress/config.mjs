@@ -55,6 +55,7 @@ export default defineConfig({
           { text: '两任', link: '/notions/two-exes' },
           { text: '诺亚方舟', link: '/notions/noah-ark' },
           { text: '纳维-斯托克斯与 AI 数学', link: '/notions/tao-ns-response' },
+          { text: '忒修斯之船', link: '/notions/theseus-protocol' },
         ]
       },
       { 
