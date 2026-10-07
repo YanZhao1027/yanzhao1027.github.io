@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "梧桐｜个人小站",
   description: "于是我仍旧栽种玫瑰。",
+  lang: 'zh-CN',
 
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/firmiana-mid.svg' }]
@@ -44,6 +45,7 @@ export default defineConfig({
           { text: '二', link: '/novels/timemagic/timemagic2' },
           { text: '三', link: '/novels/timemagic/timemagic3' },
           { text: '三又五 死灵魔法', link:'/novels/timemagic/timemagic3-5-x'},
+          { text: '三又五 死屋手记', link: '/novels/timemagic/timemagic3-5-fx'},
           { text: '四 命运魔法', link: '/novels/timemagic/timemagic4' },
           { text: '五 时间魔法', link: '/novels/timemagic/timemagic5' },
         ]
