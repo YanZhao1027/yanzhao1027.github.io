@@ -45,7 +45,6 @@ export default defineConfig({
           { text: '二', link: '/novels/timemagic/timemagic2' },
           { text: '三', link: '/novels/timemagic/timemagic3' },
           { text: '三又五 死灵魔法', link:'/novels/timemagic/timemagic3-5-x'},
-          { text: '三又五 死屋手记', link: '/novels/timemagic/timemagic3-5-fx'},
           { text: '四 命运魔法', link: '/novels/timemagic/timemagic4' },
           { text: '五 时间魔法', link: '/novels/timemagic/timemagic5' },
         ]
