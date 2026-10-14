@@ -144,3 +144,31 @@ footer{border-top:1px solid #253b46;color:#6d858b;display:flex;justify-content:s
 }
 @media(pointer:coarse){.touch-controls.active{display:flex}.game-frame canvas#gameCanvas{cursor:default}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+
+/* Combo edition: timed kill streak and striking three-hit melee feedback. */
+.combo-hud{position:absolute;left:28px;top:105px;z-index:3;width:178px;
+  background:#0b202bda;border:1px solid #759d93;border-left:4px solid #ecd08f;
+  padding:9px 12px 10px;box-shadow:4px 5px 0 #06141970;pointer-events:none;
+  transform:translateX(-10px);opacity:0;transition:opacity .18s,transform .18s}
+.combo-hud.active{transform:translateX(0);opacity:1}
+.combo-hud>div:first-child{display:flex;align-items:center;gap:9px}
+.combo-hud strong{font:900 29px/1 "DM Mono",monospace;color:#f8db97;text-shadow:2px 2px #855e4b}
+.combo-hud span{font-size:11px;letter-spacing:1px;color:#e5eee2}
+.combo-hud small{font:10px/1.4 "DM Mono",monospace;color:#a8d7c8;display:block;letter-spacing:1px;margin-top:5px}
+.combo-track{background:#203942;width:100%;height:5px;margin-top:7px;border:1px solid #547870}
+.combo-track i{display:block;height:3px;background:#8ce9ca;transition:width .1s linear}
+.touch-melee{width:58px;height:58px;font-size:16px;background:#325150de!important;color:#f3daa0!important}
+@media(max-width:850px){.combo-hud{top:82px;left:15px;transform:scale(.81);transform-origin:top left}
+ .combo-hud.active{transform:scale(.81)}}
+@media(max-width:610px){.combo-hud{top:61px;left:8px;transform:scale(.58);transform-origin:top left}
+ .combo-hud.active{transform:scale(.58)}
+ .touch-melee{width:42px;height:42px;font-size:12px}
+ .results>div{padding:7px 3px}
+ .help-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Four balanced result columns, including best combo. */
+.game-toast{bottom:87px}
+.interact-prompt{bottom:121px}
+.results{grid-template-columns:repeat(4,minmax(0,1fr))}
+.state-card{min-width:440px}
+@media(max-width:610px){.state-card{min-width:0}}

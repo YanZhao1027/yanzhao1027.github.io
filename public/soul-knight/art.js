@@ -6,13 +6,16 @@ const rand=(a,b)=>a+Math.random()*(b-a);
 const hash=(n)=>{let x=Math.sin(n*127.1+48.3)*43758.5453;return x-Math.floor(x);};
 function tile(ctx,x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));}
 function line(ctx,x1,y1,x2,y2,col,width=1){ctx.beginPath();ctx.strokeStyle=col;ctx.lineWidth=width;ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
-export function makeMap(floor){
-  let layouts=[
-    [{x:205,y:202,w:100,h:58},{x:658,y:346,w:95,h:59},{x:435,y:129,w:90,h:47}],
-    [{x:234,y:190,w:90,h:67},{x:639,y:188,w:90,h:67},{x:242,y:410,w:81,h:58},{x:646,y:406,w:81,h:60}],
-    [{x:206,y:245,w:82,h:67},{x:678,y:245,w:82,h:67},{x:443,y:122,w:75,h:39}]
+export function makeMap(floor,room=0){
+  const layouts=[
+    [{x:205,y:202,w:95,h:58},{x:666,y:350,w:97,h:59},{x:430,y:135,w:84,h:40}],
+    [{x:245,y:195,w:92,h:67},{x:636,y:193,w:95,h:66},{x:286,y:414,w:73,h:58},{x:618,y:410,w:74,h:55}],
+    [{x:273,y:202,w:65,h:60},{x:627,y:201,w:65,h:60},{x:270,y:407,w:66,h:58},{x:627,y:407,w:66,h:58}],
+    [{x:206,y:234,w:79,h:80},{x:681,y:234,w:79,h:80},{x:443,y:140,w:75,h:46},{x:445,y:402,w:75,h:48}],
+    [{x:215,y:265,w:78,h:70},{x:672,y:265,w:78,h:70},{x:430,y:135,w:90,h:42}]
   ];
-  const obstacles=layouts[(floor-1)%3], theme=floor===3?2:floor===2?1:0;
+  const obstacles=layouts[room%layouts.length].map(o=>({...o}));
+  const theme=floor===3?2:floor===2?1:0;
   const colors=[
     {base:'#1b363f',alt:'#203d44',dark:'#142b34',edge:'#345762',wall:'#405c64',rim:'#60807b',moss:'#45695b'},
     {base:'#223b3d',alt:'#284345',dark:'#193335',edge:'#4b6663',wall:'#556c66',rim:'#7a8672',moss:'#607b60'},
@@ -25,7 +28,7 @@ export function makeMap(floor){
   tile(c,50,77,860,455,colors.base);
   for(let y=77,yi=0;y<532;y+=35,yi++){
     for(let x=50,xi=0;x<910;x+=35,xi++){
-      let q=hash(xi*17+yi*41+floor*121);
+      let q=hash(xi*17+yi*41+floor*121+room*379);
       tile(c,x+1,y+1,33,33,q>.75?colors.alt:colors.base);
       tile(c,x+1,y+1,33,2,q>.58?'#34545a':colors.edge+'40');
       tile(c,x+2,y+2,2,32,'#0e28304a');
