@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b121e" />
+  <meta name="description" content="像素远征：一个可直接在浏览器玩的原创像素风地牢射击小游戏。" />
+  <title>像素远征 | Pixel Dungeon</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div class="shell">
+    <header class="site-header">
+      <div class="identity">
+        <span class="identity-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <div><div class="eyebrow">LITTLE ARCADE / VOL. 01</div><div class="brand">像素<span>远征</span><span class="brand-star">✦</span></div></div>
+      </div>
+      <div class="header-right"><span class="live-dot"></span> <span>独立像素冒险</span><span class="divider"></span><span>WEB EDITION <b>1.0</b></span></div>
+    </header>
+
+    <main>
+      <section class="intro-line">
+        <div><p class="section-kicker"><span class="line"></span> A TINY DUNGEON ADVENTURE</p><h1>勇者，<em>下一层</em>见。</h1></div>
+        <p class="intro-subtitle">随机遭遇 · 走位射击 · 战胜守关者<br />一场属于你的迷你地牢远征。</p>
+      </section>
+
+      <section class="game-frame" id="gameFrame" aria-label="地牢游戏区域">
+        <div class="corner corner-tl"></div><div class="corner corner-tr"></div><div class="corner corner-bl"></div><div class="corner corner-br"></div>
+        <canvas id="gameCanvas" width="960" height="600" tabindex="0" aria-label="用 WASD 移动、鼠标瞄准射击的地牢游戏"></canvas>
+        <div class="vignette"></div>
+        <div class="game-hud" id="gameHud">
+          <div class="player-hud">
+            <div class="portrait"><span class="portrait-face">✦</span></div>
+            <div class="vitals">
+              <div class="vital-title"><strong>无畏游侠</strong><span id="playerLevel">LV. 01</span></div>
+              <div class="meter health"><span id="hpFill"></span><small id="hpText">100 / 100</small></div>
+              <div class="meter shield"><span id="shieldFill"></span><small id="shieldText">40 / 40</small></div>
+            </div>
+          </div>
+          <div class="floor-hud"><small>— DEPTH —</small><strong id="floorLabel">第 01 层</strong><span id="waveLabel">准备出发</span></div>
+          <div class="currency-hud"><div class="coin-sign">◆</div><div><small>拾取金币</small><b id="coinText">000</b></div><button id="soundBtn" class="icon-btn" title="切换音效" aria-label="切换音效">♫</button><button id="pauseBtn" class="icon-btn" title="暂停 (P)" aria-label="暂停">Ⅱ</button></div>
+        </div>
+
+        <div id="banner" class="wave-banner" aria-live="polite"><small>NEW WAVE</small><b>敌人来袭</b></div>
+        <div id="toast" class="game-toast" aria-live="polite"></div>
+        <div id="interact" class="interact-prompt">按 <kbd>E</kbd> 互动</div>
+
+        <div class="overlay main-overlay" id="menuOverlay">
+          <div class="menu-spark spark-one">✳</div><div class="menu-spark spark-two">✦</div>
+          <div class="menu-copy">
+            <div class="menu-label"><span class="label-dot"></span> THE ADVENTURE AWAITS</div>
+            <p class="menu-upper">拾起你的武器，点燃勇气。</p>
+            <h2>地牢深处，<br /><span>总有光亮。</span></h2>
+            <p class="menu-description">一把枪，一点运气，和永不停止的冒险。<br />穿过三层地牢，击败终极守卫！</p>
+            <div class="menu-actions"><button class="primary-btn" id="startBtn">开始冒险 <span>➜</span></button><button class="text-btn" id="helpBtn">怎么玩？ <span>↗</span></button></div>
+            <div class="menu-note">✧ 原创像素游戏 · 免费游玩 · 无需安装</div>
+          </div>
+          <div class="splash-art" aria-hidden="true">
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="art-rune rune-a">✧</div><div class="art-rune rune-b">✳</div>
+            <canvas id="splashCanvas" width="340" height="380"></canvas>
+            <div class="splash-caption"><span>★</span> YOUR HERO <b>01 / 03</b></div>
+          </div>
+        </div>
+
+        <div class="overlay state-overlay hidden" id="stateOverlay">
+          <div class="state-card">
+            <div class="state-icon" id="stateIcon">Ⅱ</div><p class="menu-label" id="stateLabel">GAME PAUSED</p>
+            <h2 id="stateTitle">冒险暂歇</h2><p id="stateDescription">休息一下，前方还有未知的挑战。</p>
+            <div class="results" id="results"><div><small>深入层数</small><b id="resultFloor">01</b></div><div><small>击败敌人</small><b id="resultKills">00</b></div><div><small>收集金币</small><b id="resultCoins">000</b></div></div>
+            <div class="state-actions"><button id="resumeBtn" class="primary-btn">继续冒险 <span>➜</span></button><button id="restartBtn" class="outline-btn">重新开始</button></div>
+          </div>
+        </div>
+
+        <div class="overlay help-overlay hidden" id="helpOverlay">
+          <div class="help-card"><button id="closeHelp" class="close-btn" aria-label="关闭玩法说明">×</button><div class="menu-label">HOW TO PLAY</div><h2>冒险指南</h2><p>活下来，清除所有怪物，寻找通往下一层的传送门。</p>
+            <div class="help-grid">
+              <div><span class="key-icon">W A S D</span><b>移动</b><small>方向键同样可用</small></div>
+              <div><span class="key-icon">🖱</span><b>瞄准 / 射击</b><small>鼠标移动 + 按住左键</small></div>
+              <div><span class="key-icon">SPACE</span><b>自动开火</b><small>向准星方向持续攻击</small></div>
+              <div><span class="key-icon">SHIFT</span><b>闪避冲刺</b><small>短暂无敌，冷却 4 秒</small></div>
+              <div><span class="key-icon">Q</span><b>能量震荡</b><small>击退周围敌人，冷却 12 秒</small></div>
+              <div><span class="key-icon">E / 1 / 2</span><b>互动 / 换枪</b><small>开启宝箱，拾取武器</small></div>
+            </div>
+            <button id="helpStartBtn" class="primary-btn">明白了，出发！ <span>➜</span></button>
+          </div>
+        </div>
+
+        <div class="touch-controls" id="touchControls"><div class="virtual-stick" id="virtualStick"><div id="stickKnob"></div></div><div class="touch-actions"><button id="touchSkill" class="touch-skill">✦</button><button id="touchDash" class="touch-dash">➜</button><button id="touchFire" class="touch-fire">射击</button></div></div>
+      </section>
+
+      <div class="below-game">
+        <div class="control-list"><span class="control-list-title">操作提示</span><span><kbd>WASD</kbd> 移动</span><span><kbd>鼠标</kbd> 瞄准射击</span><span><kbd>SHIFT</kbd> 冲刺</span><span><kbd>Q</kbd> 技能</span><span><kbd>E</kbd> 互动</span></div>
+        <div class="status-pill"><span class="live-dot"></span><span id="statusText">READY TO PLAY</span></div>
+      </div>
+    </main>
+    <footer><span>© 2026 LITTLE ARCADE · 原创游戏实验室</span><span>MADE WITH <span class="heart">♥</span> &amp; JAVASCRIPT</span></footer>
+  </div>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
