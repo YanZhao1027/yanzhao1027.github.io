@@ -52,7 +52,7 @@
     cd ~/Projects/soul-knight-web
     python3 -m http.server 4173
 
-浏览器打开 http://localhost:4173/。游戏无需 npm 安装、打包或后端服务。
+浏览器打开 `http://127.0.0.1:4173/`。游戏无需 npm 安装、打包或后端服务。
 
 运行 Node.js 单元测试：
 
