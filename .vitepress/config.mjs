@@ -20,6 +20,7 @@ export default defineConfig({
       { text: '首页', link: '/' },
       { text: '开始阅读', link: '/novels/apolloforged/apolloforged1' }, // 指向你的第一章
       { text: '随想', link: '/notions/two-exes' },
+      { text: '小游戏 · 像素远征', link: 'https://yanzhao1027.github.io/soul-knight/', target: '_self', rel: 'external' },
     ],
 
     // 侧边栏核心配置

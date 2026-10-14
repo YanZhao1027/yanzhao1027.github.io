@@ -19,6 +19,11 @@ hero:
       target: _self  # <--- 核心：在这里单独写 target
       rel: external   # <--- 确保它跳出单页应用框架
     - theme: alt
+      text: 🎮 像素远征
+      link: https://yanzhao1027.github.io/soul-knight/
+      target: _self
+      rel: external
+    - theme: alt
       text: CLIX
       link: /clix-presentation
       target: _self  # <--- 核心：在这里单独写 target
