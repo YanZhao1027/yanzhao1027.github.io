@@ -92,6 +92,16 @@ shooter:{
 colors:{o:'#2d3152',v:'#8f82d6',b:'#544785',e:'#f4c784',p:'#d6a3d0'},
 pixels:['.....oo.....','....obbo....','..oobbbboo..','..ovvvvvvo..','..ovevvevo..','..ovvvvvvo..','..ovvppvvo..','.ovvvvvvvvo.','ovvovvvvovvo','oooovvvvoooo','...ovvvvo...','...obbbbo...']
 },
+boss_fire:{
+colors:{o:'#392b3e',d:'#8b3444',r:'#d95b4c',y:'#fff0a0',h:'#f4b768',e:'#223347',k:'#6d4543'},
+pixels:[
+'oo...........oo','oryo.......oyro','orryo.....oyrro','.odryoooooyrdo','..odrrrrrdo...','..orrryrrro...','..oryeeyrro...','..orryyrrro...','..orrhhrrro...','.odrrrrrrrdo..','odrrdrrrdrro..','orrdrrrrrdrrdo','ooooorrrroooo.','....oddddo....','....okooko....'
+]},
+boss_arcane:{
+colors:{o:'#292c50',d:'#54579d',c:'#91dbec',y:'#f1e3b3',e:'#23374b',v:'#bcb5fb',h:'#65a3c9'},
+pixels:[
+'...o.......o...','..ocoo...ooco..','..ocdvooodvco..','..ovddddddvo...','..odccccddo....','..ovceecvdo....','..ovdvvddvo....','.ovhhcc hhvo...','.ovccccccvo...','ooddcccccddoo..','ovddvccccvddvo.','oooodvvvvdoooo.','...oddddddo....','...oddooddo....','..ovdo..odvo...'
+]},
 boss:{
 colors:{o:'#3d243d',v:'#b04c5d',b:'#772f51',e:'#ffd98e',p:'#db9b8a',g:'#f0c17b'},
 pixels:['oo..........oo','ovoo......oovo','ovvboooooobvvo','.ovbvvvvvvbvo.','..obvvvvvvbo..','..ovvevvevvo..','..ovvvvvvvvo..','..ovvggggvvo..','.obvvvvvvvvbo.','obvvvvvvvvvvbo','ovvovvvvvvovvo','oooovvvvvvoooo','...ovvvvvvo...','...obbbbbbo...','...obboobbo...']
@@ -108,7 +118,7 @@ function getSprite(kind){
   spriteCache.set(kind,c);return c;
 }
 export function drawActor(ctx,kind,x,y,t,dir=0,flash=0,scale=1,moving=false){
-  const sprite=getSprite(kind);const s=(kind==='boss'?1.65:1)*scale;
+  const sprite=getSprite(kind);const s=(kind==='boss'||kind.startsWith('boss_')?1.7:1)*scale;
   const width=sprite.width*s,height=sprite.height*s;
   ctx.save();ctx.translate(Math.round(x),Math.round(y));
   ctx.globalAlpha=.28;ctx.fillStyle='#000e17';ctx.beginPath();ctx.ellipse(0,8,width*.39,8,0,0,TAU);ctx.fill();ctx.globalAlpha=1;
@@ -120,9 +130,29 @@ export function drawActor(ctx,kind,x,y,t,dir=0,flash=0,scale=1,moving=false){
   ctx.restore();
 }
 export function drawGun(ctx,x,y,angle,type='pistol',t=0,recoil=0){
-  const long=type==='rifle'?33:type==='shotgun'?30:25;
   ctx.save();ctx.translate(x,y-7);ctx.rotate(angle);
-  let side=Math.cos(angle)<0?-1:1;
+  if(type==='sword'){
+    tile(ctx,5,-4,9,8,'#7f6aaf');tile(ctx,14,-7,8,13,'#e9d5a7');
+    tile(ctx,18,-3,28,6,'#96adf2');tile(ctx,22,-2,24,4,'#ecf4ff');
+    tile(ctx,42,-2,8,4,'#ffffff');
+    ctx.restore();return;
+  }
+  if(type==='boomerang'){
+    ctx.strokeStyle='#f4ca7d';ctx.lineWidth=7;ctx.lineCap='square';
+    ctx.beginPath();ctx.moveTo(6,-13);ctx.lineTo(25,-5);ctx.lineTo(36,-14);ctx.stroke();
+    ctx.strokeStyle='#fff1bb';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(6,-17);ctx.lineTo(25,-9);ctx.lineTo(36,-18);ctx.stroke();
+    ctx.restore();return;
+  }
+  if(type==='laser'){
+    const pulse=Math.sin(t*15)*2;
+    tile(ctx,4,-9,32,18,'#203e50');tile(ctx,10,-12,18,5,'#75a3ac');
+    tile(ctx,11,-4,32,8,'#447986');tile(ctx,26,-6,19,12,'#9ad8db');
+    tile(ctx,37,-4,11,8,'#d5ffff');tile(ctx,40,-2,9+pulse,4,'#7df7f5');
+    tile(ctx,5,2,9,11,'#a48480');
+    ctx.restore();return;
+  }
+  const long=type==='rifle'?33:type==='shotgun'?30:25;
   tile(ctx,6-recoil*5,-5,Math.max(8,long-7),10,'#172d3e');
   tile(ctx,10-recoil*5,-3,long-12,5,type==='rifle'?'#aab6b6':'#c8aa7e');
   tile(ctx,long-4-recoil*5,-4,6,7,'#253e51');

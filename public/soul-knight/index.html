@@ -23,7 +23,7 @@
     <main>
       <section class="intro-line">
         <div><p class="section-kicker"><span class="line"></span> A TINY DUNGEON ADVENTURE</p><h1>勇者，<em>下一层</em>见。</h1></div>
-        <p class="intro-subtitle">五室探索 · 三段连击 · 战胜守关者<br />一场属于你的迷你地牢远征。</p>
+        <p class="intro-subtitle">五室探索 · 三种新武器 · 随机圣物 · 三位守关者<br />一场属于你的迷你地牢远征。</p>
       </section>
 
       <section class="game-frame" id="gameFrame" aria-label="地牢游戏区域">
@@ -58,7 +58,7 @@
             <div class="menu-label"><span class="label-dot"></span> THE ADVENTURE AWAITS</div>
             <p class="menu-upper">拾起你的武器，点燃勇气。</p>
             <h2>地牢深处，<br /><span>总有光亮。</span></h2>
-            <p class="menu-description">一把枪，一点运气，和永不停止的冒险。<br />穿过三层十五个房间，击败终极守卫！</p>
+            <p class="menu-description">一把枪，一点运气，和永不停止的冒险。<br />穿过三层十五个房间，收集圣物，击败三位守关者！</p>
             <div class="menu-actions"><button class="primary-btn" id="startBtn">开始冒险 <span>➜</span></button><button class="text-btn" id="helpBtn">怎么玩？ <span>↗</span></button></div>
             <div class="menu-note">✧ 原创像素游戏 · 免费游玩 · 无需安装</div>
           </div>
@@ -88,17 +88,30 @@
               <div><span class="key-icon">J · J · J</span><b>三段斩击</b><small>连按 J，打出旋刃终结技</small></div>
               <div><span class="key-icon">SHIFT</span><b>闪避冲刺</b><small>短暂无敌，冷却 4 秒</small></div>
               <div><span class="key-icon">Q</span><b>能量震荡</b><small>击退周围敌人，冷却 12 秒</small></div>
-              <div><span class="key-icon">E / 1 / 2</span><b>互动 / 换枪</b><small>开启宝箱，拾取武器</small></div>
+              <div><span class="key-icon">E</span><b>宝箱 / 传送门</b><small>普通房间门走近自动进入</small></div>
+              <div><span class="key-icon">1 - 6 / F</span><b>切换武器</b><small>鼠标滚轮同样可用</small></div>
+              <div><span class="key-icon">✦ × 3</span><b>随机圣物</b><small>藏宝房三选一永久属性增益</small></div>
             </div>
             <button id="helpStartBtn" class="primary-btn">明白了，出发！ <span>➜</span></button>
           </div>
         </div>
 
-        <div class="touch-controls" id="touchControls"><div class="virtual-stick" id="virtualStick"><div id="stickKnob"></div></div><div class="touch-actions"><button id="touchSkill" class="touch-skill">✦</button><button id="touchDash" class="touch-dash">➜</button><button id="touchMelee" class="touch-melee" aria-label="三段斩击">斩</button><button id="touchFire" class="touch-fire">射击</button></div></div>
+        <div class="overlay relic-overlay hidden" id="relicOverlay" role="dialog" aria-modal="true" aria-label="选择属性圣物">
+          <div class="relic-modal">
+            <div class="relic-overline">✦ FOR YOUR JOURNEY ✦</div>
+            <p id="relicFloor">第 01 层 · 秘藏宝室</p>
+            <h2>从命运中，<em>择一份祝福。</em></h2>
+            <p class="relic-intro">随机获得 3 件属性圣物，选择 1 件永久强化本次冒险。</p>
+            <div id="relicChoices" class="relic-choices"></div>
+            <div class="relic-bonus"><span>✧ 本层额外解锁新武器</span><b id="rewardWeaponName">棱镜激光炮</b></div>
+            <small class="relic-note">选择圣物后自动装备武器 · 可按数字键 1–3 选择</small>
+          </div>
+        </div>
+        <div class="touch-controls" id="touchControls"><div class="virtual-stick" id="virtualStick"><div id="stickKnob"></div></div><div class="touch-actions"><button id="touchSkill" class="touch-skill">✦</button><button id="touchDash" class="touch-dash">➜</button><button id="touchMelee" class="touch-melee" aria-label="三段斩击">斩</button><button id="touchNext" class="touch-next" aria-label="切换武器">换枪</button><button id="touchFire" class="touch-fire">射击</button></div></div>
       </section>
 
       <div class="below-game">
-        <div class="control-list"><span class="control-list-title">操作提示</span><span><kbd>WASD</kbd> 移动</span><span><kbd>鼠标</kbd> 瞄准射击</span><span><kbd>SHIFT</kbd> 冲刺</span><span><kbd>Q</kbd> 技能</span><span><kbd>J</kbd> 三段连击</span><span><kbd>E</kbd> 互动</span></div>
+        <div class="control-list"><span class="control-list-title">操作提示</span><span><kbd>WASD</kbd> 移动</span><span><kbd>鼠标</kbd> 瞄准射击</span><span><kbd>SHIFT</kbd> 冲刺</span><span><kbd>Q</kbd> 技能</span><span><kbd>J</kbd> 三段连击</span><span><kbd>E</kbd> 宝箱/传送</span><span><kbd>F</kbd> 换枪</span><span>自动穿门</span></div>
         <div class="status-pill"><span class="live-dot"></span><span id="statusText">READY TO PLAY</span></div>
       </div>
     </main>
