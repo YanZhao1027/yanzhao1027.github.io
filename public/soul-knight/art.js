@@ -1,4 +1,5 @@
 // All artwork is created at runtime. No copyrighted game assets are used.
+import {generateObstacles,combineSeed,seedNumber} from './rooms.mjs';
 export const WIDTH=960, HEIGHT=600;
 const TAU=Math.PI*2;
 const spriteCache=new Map();
@@ -7,19 +8,15 @@ const hash=(n)=>{let x=Math.sin(n*127.1+48.3)*43758.5453;return x-Math.floor(x);
 function tile(ctx,x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));}
 function line(ctx,x1,y1,x2,y2,col,width=1){ctx.beginPath();ctx.strokeStyle=col;ctx.lineWidth=width;ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
 export function makeMap(floor,room=0){
-  const layouts=[
-    [{x:205,y:202,w:95,h:58},{x:666,y:350,w:97,h:59},{x:430,y:135,w:84,h:40}],
-    [{x:245,y:195,w:92,h:67},{x:636,y:193,w:95,h:66},{x:286,y:414,w:73,h:58},{x:618,y:410,w:74,h:55}],
-    [{x:273,y:202,w:65,h:60},{x:627,y:201,w:65,h:60},{x:270,y:407,w:66,h:58},{x:627,y:407,w:66,h:58}],
-    [{x:206,y:234,w:79,h:80},{x:681,y:234,w:79,h:80},{x:443,y:140,w:75,h:46},{x:445,y:402,w:75,h:48}],
-    [{x:215,y:265,w:78,h:70},{x:672,y:265,w:78,h:70},{x:430,y:135,w:90,h:42}]
-  ];
-  const obstacles=layouts[room%layouts.length].map(o=>({...o}));
-  const theme=floor===3?2:floor===2?1:0;
+  const data=typeof room==='object'?room:{id:room,mapSeed:combineSeed(2026,floor,room),kind:'combat'};
+  const seed=seedNumber(data.mapSeed??combineSeed(2026,floor,data.id));
+  const obstacles=generateObstacles(seed,data.kind);
+  const theme=floor===4?3:floor===3?2:floor===2?1:0;
   const colors=[
-    {base:'#1b363f',alt:'#203d44',dark:'#142b34',edge:'#345762',wall:'#405c64',rim:'#60807b',moss:'#45695b'},
-    {base:'#223b3d',alt:'#284345',dark:'#193335',edge:'#4b6663',wall:'#556c66',rim:'#7a8672',moss:'#607b60'},
-    {base:'#313541',alt:'#373d47',dark:'#242a35',edge:'#625b67',wall:'#655c6c',rim:'#91817f',moss:'#716476'}
+    {base:'#243c3f',alt:'#2d4749',dark:'#142a31',edge:'#436763',wall:'#405d60',rim:'#779184',moss:'#537968'},
+    {base:'#233a45',alt:'#2d4650',dark:'#182c3b',edge:'#446471',wall:'#506777',rim:'#8d9290',moss:'#607d81'},
+    {base:'#39323e',alt:'#453d49',dark:'#241f32',edge:'#725b68',wall:'#665361',rim:'#b3918c',moss:'#786274'},
+    {base:'#332f43',alt:'#423544',dark:'#191e31',edge:'#60485f',wall:'#564a59',rim:'#907482',moss:'#4b596b'}
   ][theme];
   const buffer=document.createElement('canvas');buffer.width=WIDTH;buffer.height=HEIGHT;
   const c=buffer.getContext('2d');c.imageSmoothingEnabled=false;
@@ -28,7 +25,7 @@ export function makeMap(floor,room=0){
   tile(c,50,77,860,455,colors.base);
   for(let y=77,yi=0;y<532;y+=35,yi++){
     for(let x=50,xi=0;x<910;x+=35,xi++){
-      let q=hash(xi*17+yi*41+floor*121+room*379);
+      let q=hash(xi*17+yi*41+(seed%100000)*.79);
       tile(c,x+1,y+1,33,33,q>.75?colors.alt:colors.base);
       tile(c,x+1,y+1,33,2,q>.58?'#34545a':colors.edge+'40');
       tile(c,x+2,y+2,2,32,'#0e28304a');
@@ -49,7 +46,70 @@ export function makeMap(floor,room=0){
   for(let x=48;x<922;x+=56){tile(c,x,44,30,4,'#7d918a6b');tile(c,x+3,550,25,4,'#91a09365');}
   for(let y=75;y<520;y+=59){tile(c,41,y,7,31,'#62777b');tile(c,912,y,7,31,'#62777b');}
   for(const ob of obstacles)drawPillar(c,ob,colors);
-  return {canvas:buffer,obstacles,colors,theme};
+  paintRoomFeatures(c,floor,data,seed,colors);
+  return {canvas:buffer,obstacles,colors,theme,kind:data.kind,seed};
+
+}
+function paintRoomFeatures(c,floor,room,seed,col){
+  const kind=room.kind;
+  c.save();
+  if(floor===1){
+    // Mossy headstones and withered tree roots.
+    for(let i=0;i<8;i++){
+      const x=80+(i*109+seed%53)%790,y=i%2?468:168;
+      tile(c,x,y,21,5,'#304949');tile(c,x+4,y-14,13,14,'#61746d');
+      tile(c,x+6,y-11,9,3,'#82978a');
+    }
+  }else if(floor===2){
+    for(let i=0;i<10;i++){
+      const x=88+(i*91+seed%33)%760,y=i%2?474:154;
+      tile(c,x,y,24,5,'#7796a14a');tile(c,x+3,y-9,17,8,'#536e7a');
+      tile(c,x+6,y-7,6,4,'#a3bbad');
+    }
+  }else if(floor===3){
+    for(let i=0;i<7;i++){
+      const x=88+(i*117+seed%23)%760,y=i%2?474:151;
+      tile(c,x,y,28,5,'#7c394c');
+      tile(c,x+8,y-18,9,18,'#be6659');tile(c,x+10,y-24,5,8,'#df9375');
+    }
+  }
+  if(kind==='memory'){
+    tile(c,448,267,64,100,'#0c2731');tile(c,453,269,54,85,'#709a9a');
+    tile(c,460,277,40,69,'#253e57');tile(c,468,281,23,57,'#80b7bb59');
+    tile(c,455,357,50,8,'#efcc96');tile(c,445,362,70,9,'#59646b');
+    tile(c,474,290,10,12,'#b2d5d9');
+  }else if(kind==='event'){
+    tile(c,456,267,50,78,'#233039');tile(c,462,260,40,80,'#82918a');
+    tile(c,468,269,28,57,'#536f73');tile(c,476,281,14,3,'#dfc493');
+    tile(c,472,298,19,3,'#c4b9a1');tile(c,448,340,67,12,'#334a51');
+  }else if(kind==='guardian'){
+    c.strokeStyle='#cf9e7655';c.lineWidth=6;
+    c.beginPath();c.arc(480,299,116,0,Math.PI*2);c.stroke();
+    for(let i=0;i<8;i++){
+      let a=i*Math.PI/4,x=480+Math.cos(a)*112,y=299+Math.sin(a)*112;
+      tile(c,x-5,y-5,10,10,'#d7a88c');
+    }
+  }else if(kind==='dragon'){
+    // Royal throne, shattered seal, chains, red floor markings.
+    tile(c,391,121,178,112,'#28293b');tile(c,404,125,151,80,'#625261');
+    tile(c,421,136,116,48,'#282b43');tile(c,435,143,89,18,'#8e657b');
+    tile(c,419,222,125,20,'#423747');
+    c.strokeStyle='#e9ae9477';c.lineWidth=6;
+    for(let r of [148,174]){
+      c.beginPath();c.ellipse(480,291,r,r*.68,0,0,Math.PI*2);c.stroke();
+    }
+    for(let i=0;i<7;i++){
+      const x=300+i*62;
+      tile(c,x,459+((i%2)*10),27,7,'#8f5360');
+      tile(c,x+7,454+(i%2)*10,14,5,'#d6a48e');
+    }
+    for(let side of [-1,1]){
+      c.strokeStyle='#8893a68a';c.lineWidth=6;c.beginPath();
+      c.moveTo(480+side*36,95);c.lineTo(480+side*77,176);
+      c.lineTo(480+side*138,198);c.stroke();
+    }
+  }
+  c.restore();
 }
 function drawPillar(c,o,col){
   c.fillStyle='#061a258c';c.fillRect(o.x-8,o.y+8,o.w+17,o.h+10);

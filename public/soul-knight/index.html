@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b121e" />
-  <meta name="description" content="像素远征：一个可直接在浏览器玩的原创像素风地牢射击小游戏。" />
-  <title>像素远征 | Pixel Dungeon</title>
+  <meta name="description" content="像素远征：遗忘的誓约。带随机地牢、记忆碎片和巨龙终章的原创像素风冒险游戏。" />
+  <title>像素远征：遗忘的誓约 | The Forgotten Oath</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -22,8 +22,8 @@
 
     <main>
       <section class="intro-line">
-        <div><p class="section-kicker"><span class="line"></span> A TINY DUNGEON ADVENTURE</p><h1>勇者，<em>下一层</em>见。</h1></div>
-        <p class="intro-subtitle">五室探索 · 三种新武器 · 随机圣物 · 三位守关者<br />一场属于你的迷你地牢远征。</p>
+        <div><p class="section-kicker"><span class="line"></span> A TINY DUNGEON ADVENTURE</p><h1>勇者，<em>你还记得吗？</em></h1></div>
+        <p class="intro-subtitle">随机迷宫 · 失落记忆 · 王之阴谋 · 巨龙终章<br />一场追逐被遗忘真相的冒险。</p>
       </section>
 
       <section class="game-frame" id="gameFrame" aria-label="地牢游戏区域">
@@ -39,7 +39,7 @@
               <div class="meter shield"><span id="shieldFill"></span><small id="shieldText">40 / 40</small></div>
             </div>
           </div>
-          <div class="floor-hud"><small>— DEPTH —</small><strong id="floorLabel">第 01 层</strong><span id="waveLabel">准备出发</span></div>
+          <div class="floor-hud"><small>— THE FORGOTTEN OATH —</small><strong id="floorLabel">第 01 层</strong><span id="waveLabel">准备出发</span></div>
           <div class="currency-hud"><div class="coin-sign">◆</div><div><small>拾取金币</small><b id="coinText">000</b></div><button id="soundBtn" class="icon-btn" title="切换音效" aria-label="切换音效">♫</button><button id="pauseBtn" class="icon-btn" title="暂停 (P)" aria-label="暂停">Ⅱ</button></div>
         </div>
 
@@ -48,6 +48,7 @@
           <small id="comboRank">CHAIN · 1.00 倍</small>
           <div class="combo-track"><i id="comboFill"></i></div>
         </div>
+        <button id="journalBtn" class="journal-tab" title="记忆档案（M）" aria-label="打开记忆档案">◈ <span>记忆</span> <small id="fragmentCount">0/9</small></button>
         <div id="banner" class="wave-banner" aria-live="polite"><small>NEW WAVE</small><b>敌人来袭</b></div>
         <div id="toast" class="game-toast" aria-live="polite"></div>
         <div id="interact" class="interact-prompt">按 <kbd>E</kbd> 互动</div>
@@ -57,16 +58,16 @@
           <div class="menu-copy">
             <div class="menu-label"><span class="label-dot"></span> THE ADVENTURE AWAITS</div>
             <p class="menu-upper">拾起你的武器，点燃勇气。</p>
-            <h2>地牢深处，<br /><span>总有光亮。</span></h2>
-            <p class="menu-description">一把枪，一点运气，和永不停止的冒险。<br />穿过三层十五个房间，收集圣物，击败三位守关者！</p>
+            <h2>你曾许下，<br /><span>永不遗忘的誓言。</span></h2>
+            <p class="menu-description">一把枪，一点运气，和永不停止的冒险。<br />每一次地图都会改变。找回被遗忘的誓约，走向巨龙的王庭。</p>
             <div class="menu-actions"><button class="primary-btn" id="startBtn">开始冒险 <span>➜</span></button><button class="text-btn" id="helpBtn">怎么玩？ <span>↗</span></button></div>
-            <div class="menu-note">✧ 原创像素游戏 · 免费游玩 · 无需安装</div>
+            <div class="menu-note">✧ 原创像素叙事冒险 · 随机地图 · 记忆与誓约</div>
           </div>
           <div class="splash-art" aria-hidden="true">
             <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
             <div class="art-rune rune-a">✧</div><div class="art-rune rune-b">✳</div>
             <canvas id="splashCanvas" width="340" height="380"></canvas>
-            <div class="splash-caption"><span>★</span> YOUR HERO <b>01 / 03</b></div>
+            <div class="splash-caption"><span>✧</span> THE FORGOTTEN OATH <b>?? / ??</b></div>
           </div>
         </div>
 
@@ -80,7 +81,7 @@
         </div>
 
         <div class="overlay help-overlay hidden" id="helpOverlay">
-          <div class="help-card"><button id="closeHelp" class="close-btn" aria-label="关闭玩法说明">×</button><div class="menu-label">HOW TO PLAY</div><h2>冒险指南</h2><p>每层五个房间。清怪开门，在藏宝支线补给，再向守关房进发。</p>
+          <div class="help-card"><button id="closeHelp" class="close-btn" aria-label="关闭玩法说明">×</button><div class="menu-label">HOW TO PLAY</div><h2>冒险指南</h2><p>随机地牢中清怪开门、收集圣物。寻找必经的记忆房，逐步拼回王子的过去。</p>
             <div class="help-grid">
               <div><span class="key-icon">W A S D</span><b>移动</b><small>方向键同样可用</small></div>
               <div><span class="key-icon">🖱</span><b>瞄准 / 射击</b><small>鼠标移动 + 按住左键</small></div>
@@ -88,9 +89,9 @@
               <div><span class="key-icon">J · J · J</span><b>三段斩击</b><small>连按 J，打出旋刃终结技</small></div>
               <div><span class="key-icon">SHIFT</span><b>闪避冲刺</b><small>短暂无敌，冷却 4 秒</small></div>
               <div><span class="key-icon">Q</span><b>能量震荡</b><small>击退周围敌人，冷却 12 秒</small></div>
-              <div><span class="key-icon">E</span><b>宝箱 / 传送门</b><small>普通房间门走近自动进入</small></div>
+              <div><span class="key-icon">E</span><b>调查 / 互动</b><small>宝箱、传送门、最终线索</small></div>
               <div><span class="key-icon">1 - 6 / F</span><b>切换武器</b><small>鼠标滚轮同样可用</small></div>
-              <div><span class="key-icon">✦ × 3</span><b>随机圣物</b><small>藏宝房三选一永久属性增益</small></div>
+              <div><span class="key-icon">M</span><b>记忆档案</b><small>查看已收集的回忆线索</small></div>
             </div>
             <button id="helpStartBtn" class="primary-btn">明白了，出发！ <span>➜</span></button>
           </div>
@@ -111,11 +112,28 @@
       </section>
 
       <div class="below-game">
-        <div class="control-list"><span class="control-list-title">操作提示</span><span><kbd>WASD</kbd> 移动</span><span><kbd>鼠标</kbd> 瞄准射击</span><span><kbd>SHIFT</kbd> 冲刺</span><span><kbd>Q</kbd> 技能</span><span><kbd>J</kbd> 三段连击</span><span><kbd>E</kbd> 宝箱/传送</span><span><kbd>F</kbd> 换枪</span><span>自动穿门</span></div>
+        <div class="control-list"><span class="control-list-title">操作提示</span><span><kbd>WASD</kbd> 移动</span><span><kbd>鼠标</kbd> 瞄准射击</span><span><kbd>SHIFT</kbd> 冲刺</span><span><kbd>Q</kbd> 技能</span><span><kbd>J</kbd> 三段连击</span><span><kbd>E</kbd> 调查</span><span><kbd>M</kbd> 记忆档案</span><span><kbd>F</kbd> 换枪</span><span>自动穿门</span></div>
         <div class="status-pill"><span class="live-dot"></span><span id="statusText">READY TO PLAY</span></div>
       </div>
     </main>
     <footer><span>© 2026 LITTLE ARCADE · 原创游戏实验室</span><span>MADE WITH <span class="heart">♥</span> &amp; JAVASCRIPT</span></footer>
+  </div>
+  <div class="overlay story-overlay hidden" id="storyOverlay" role="dialog" aria-modal="true" aria-label="故事片段">
+    <div class="story-window">
+      <div class="story-header"><span id="storyKicker">MEMORY / UNKNOWN</span><span id="storyStep">01 / 03</span></div>
+      <div class="story-picture"><canvas id="storyCanvas" width="768" height="300" aria-label="像素风剧情插画"></canvas><div class="picture-corner picture-corner-left"></div><div class="picture-corner picture-corner-right"></div></div>
+      <h2 id="storyTitle">一段陌生的回忆</h2>
+      <div class="story-dialog"><b id="storySpeaker">？？？</b><p id="storyText">……</p></div>
+      <div class="story-actions"><span>—— 记忆并不会真正消失 ——</span><button id="storyNext" class="primary-btn">继续 <span>➜</span></button></div>
+    </div>
+  </div>
+  <div class="overlay archive-overlay hidden" id="archiveOverlay" role="dialog" aria-modal="true" aria-label="记忆档案">
+    <div class="archive-window">
+      <div class="archive-heading"><div><div class="menu-label">THE MEMORY ARCHIVE</div><h2>记忆 · 档案</h2><p>碎片不会因迷宫改变而消失。已发现的记录会跨冒险保留。</p></div><button id="archiveClose" class="close-btn" aria-label="关闭记忆档案">×</button></div>
+      <div class="archive-progress"><span id="archiveCount">0 / 9</span><span>FRAGMENTS RECOVERED</span></div>
+      <div id="archiveItems" class="archive-list"></div>
+      <button id="archiveBack" class="outline-btn">返回冒险</button>
+    </div>
   </div>
   <script type="module" src="./game.js"></script>
 </body>

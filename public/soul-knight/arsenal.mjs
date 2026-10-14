@@ -12,7 +12,9 @@ export const BOSS_WEAPONS=['rifle','shotgun',null];
 export const BOSS_DATA=Object.freeze({
   boss_fire:{name:'熔核巨像',baseHp:205,speed:48,r:36,damage:17,color:'#f4a064',shootRate:2.45,hint:'熔岩轮舞 · 环形弹幕'},
   boss_arcane:{name:'霜镜法师',baseHp:365,speed:88,r:29,damage:14,color:'#9be0fa',shootRate:1.85,hint:'幻影瞬移 · 寒霜扇形'},
-  boss:{name:'深渊守卫',baseHp:570,speed:69,r:35,damage:19,color:'#e28caa',shootRate:1.52,hint:'深渊齐射 · 呼唤暗影'}
+  boss:{name:'深渊守卫',baseHp:570,speed:69,r:35,damage:19,color:'#e28caa',shootRate:1.52,hint:'深渊齐射 · 呼唤暗影'},
+  dragon:{name:'誓约之龙',baseHp:900,speed:48,r:53,damage:21,color:'#c0a4da',
+    shootRate:2.25,hint:'龙焰扇击 · 破碎的誓言'}
 });
 export const FLOOR_BOSSES=['boss_fire','boss_arcane','boss'];
 export function bossHp(type){const data=BOSS_DATA[type];if(!data)throw new Error('Unknown boss '+type);return data.baseHp*4;}

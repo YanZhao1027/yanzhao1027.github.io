@@ -1,5 +1,8 @@
 import {WIDTH,HEIGHT,makeMap,drawWorld,drawActor,drawGun,drawChest,drawPortal,drawPickup,drawSplash} from './art.js';
-import {createRooms,DOORS,roomEntryPosition,areNeighbors,comboRank,comboMultiplier} from './rooms.mjs';
+import {createRooms,DOORS,roomEntryPosition,areNeighbors,comboRank,comboMultiplier,seedNumber,combineSeed,randomSource} from './rooms.mjs';
+import {STORY_SCENES,memoryForRoom,STORY_TITLE} from './story.mjs';
+import {setupNarrative} from './narrative.js';
+import {drawDragon,drawDragonClues} from './cinematic.js';
 import {WEAPONS,TREASURE_WEAPONS,BOSS_WEAPONS,BOSS_DATA,FLOOR_BOSSES,bossHp,isBoss,hitRayPoint,RELICS,draftRelics,applyRelic} from './arsenal.mjs';
 const $=id=>document.getElementById(id);
 const canvas=$('gameCanvas'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
@@ -10,6 +13,19 @@ const dom={menu:$('menuOverlay'),help:$('helpOverlay'),state:$('stateOverlay'),r
 // Mount the reward dialog at document root so small-screen canvas clipping cannot hide choices.
 document.body.appendChild(dom.reward);
 let mode='menu',G=null,frame=0,last=performance.now(),audio=null,soundOn=true;
+const N=setupNarrative({
+  getMode:()=>mode,setMode:v=>{mode=v;
+    if(v==='story'||v==='archive'){keys.clear();mouse.down=false;touch.fire=false;}},
+  onReturn:()=>{if(mode==='playing')canvas.focus();}
+});
+function freshSeed(){
+  const query=new URLSearchParams(location.search).get('seed');
+  if(query!==null&&query.trim()!=='')return seedNumber(query);
+  if(globalThis.crypto?.getRandomValues){
+    const key=new Uint32Array(1);crypto.getRandomValues(key);return key[0];
+  }
+  return (Date.now()^Math.floor(Math.random()*0xffffffff))>>>0;
+}
 const keys=new Set(),mouse={x:652,y:299,down:false},touch={x:0,y:0,fire:false,active:false};
 const params=WEAPONS;
 let touchMode=window.matchMedia('(pointer:coarse)').matches;
@@ -37,18 +53,21 @@ function banner(title,subtitle='NEW WAVE',sec=1.6){
   dom.banner.classList.add('show');clearTimeout(banner.timer);
   banner.timer=setTimeout(()=>dom.banner.classList.remove('show'),sec*1000);
 }
-function blankGame(){
+function blankGame(seed=freshSeed()){
   const p={x:480,y:374,r:15,hp:100,maxHp:100,shield:40,maxShield:40,speed:225,
     dir:-.35,hit:0,lastHit:0,invuln:0,dashCd:0,dashTime:0,dashVX:0,dashVY:0,
     skillCd:0,fireCd:0,recoil:0,weapons:['pistol'],slot:0,moving:false,
     power:1,attackSpeed:1,bladePower:1,projectilePower:1,shieldRegen:0,
     magnet:0,dashFactor:1,skillFactor:1,vampireHeal:0,relics:[],
     meleeStage:0,meleeWindow:0,meleeCd:0,meleeFx:0,meleeAngle:0,meleeRange:0};
-  return {floor:1,roomIndex:0,rooms:createRooms(),wave:1,kills:0,coins:0,score:0,
-    combo:0,bestCombo:0,comboTimer:0,time:0,player:p,map:makeMap(1,0),
+  const rooms=createRooms(seed,1);
+  return {seed,runSeed:seed.toString(16).toUpperCase().padStart(8,'0'),
+    floor:1,roomIndex:0,rooms,wave:1,kills:0,coins:0,score:0,
+    combo:0,bestCombo:0,comboTimer:0,time:0,player:p,map:makeMap(1,rooms[0]),
     enemies:[],bullets:[],enemyBullets:[],specialShots:[],beams:[],pickups:[],
     particles:[],chest:null,portal:null,shake:0,flash:0,transitionCd:0,
-    relicOptions:[],rewardWeapon:null};
+    relicOptions:[],rewardWeapon:null,dragonRemains:null,
+    clues:{dress:false,ring:false},dragonStage:1};
 }
 G=blankGame();
 function currentRoom(){return G.rooms[G.roomIndex];}
@@ -57,7 +76,8 @@ function newGame(){
   mode='playing';dom.menu.classList.add('hidden');dom.state.classList.add('hidden');dom.help.classList.add('hidden');dom.reward.classList.add('hidden');
   $('statusText').textContent='EXPEDITION IN PROGRESS';
   $('resumeBtn').style.display='';
-  canvas.focus();enterRoom(0);
+  canvas.focus();
+  N.play('opening',()=>enterRoom(0));
 }
 function saveCurrentRoom(){
   const room=currentRoom();
@@ -72,13 +92,14 @@ function enterRoom(id,fromId=null){
   g.roomIndex=id;g.wave=id+1;
   const room=currentRoom();
   room.visited=true;
-  g.map=makeMap(g.floor,id);
+  g.map=makeMap(g.floor,room);
   g.enemies=room.enemies;g.pickups=room.pickups;
   g.chest=room.chest;g.portal=room.portal;
   g.bullets=[];g.enemyBullets=[];g.specialShots=[];g.beams=[];g.particles=[];g.transitionCd=.65;
   g.player.dashTime=0;g.player.invuln=Math.max(g.player.invuln,.7);
   const p=roomEntryPosition(g.rooms,fromId,id);
-  g.player.x=p.x;g.player.y=p.y;
+  g.player.x=room.kind==='dragon'?480:p.x;
+  g.player.y=room.kind==='dragon'?467:p.y;
   if(!room.spawned)populateRoom(room);
   else banner(room.name,room.cleared?'ROOM CLEARED':'RETURN TO THE FIGHT',1.2);
   updateHud();return true;
@@ -88,8 +109,20 @@ function populateRoom(room){
   if(room.kind==='treasure'){
     room.cleared=true;room.chest={x:480,y:302,opened:false};G.chest=room.chest;
     banner('发现秘藏宝室','SECRET CHAMBER',2);
-    toast('沿北门探索的奖励！宝箱在房间中央',2.4);
+    toast('古老的遗物被遗忘在这里。宝箱就在房间中央。',2.4);
     sound(780,.23,'triangle',.04);return;
+  }
+  if(room.kind==='memory'||room.kind==='event'){
+    room.cleared=true;
+    const memoryId=memoryForRoom(G.floor,room.kind);
+    if(memoryId&&!room.memoryCollected){
+      room.memoryCollected=true;
+      N.play(memoryId,()=>{
+        banner(room.kind==='memory'?'拾回一段记忆':'发现失落的线索','MEMORY RECOVERED',1.8);
+        updateHud();
+      });
+    }
+    updateHud();return;
   }
   if(room.kind==='guardian'){
     const kind=FLOOR_BOSSES[G.floor-1];
@@ -98,15 +131,20 @@ function populateRoom(room){
     toast(BOSS_DATA[kind].hint,2.7);
     sound(155,.46,'sawtooth',.05);return;
   }
-  const count=(room.id===0?3:room.id===1?5:8)+(G.floor-1);
-  const types=room.id===0?['slime','slime','bat','shooter']:
-    room.id===1?['slime','bat','shooter','slime','bat']:
-    ['bat','shooter','slime','shooter','bat'];
-  for(let i=0;i<count;i++){
-    const pos=freeSpot(room.id===0?160:180);
-    spawnEnemy(types[(i+G.floor-1)%types.length],pos.x,pos.y);
+  if(room.kind==='dragon'){
+    spawnEnemy('dragon',480,315);
+    banner('最后的守望者','THE LAST DRAGON',2.5);
+    N.play('beforeDragon',()=>toast('打败这条龙，完成国王交付的使命……',2.2));
+    return;
   }
-  banner(room.name,'ROOM '+String(room.id+1).padStart(2,'0')+' / 05');
+  const rand=randomSource(combineSeed(G.seed,G.floor,room.id,'enemies'));
+  const count=(room.isMain?3:4)+(G.floor-1)+Math.floor(rand()*4);
+  const types=['slime','bat','shooter','slime','bat','shooter'];
+  for(let i=0;i<count;i++){
+    const pos=freeSpot(170);
+    spawnEnemy(types[Math.floor(rand()*types.length)],pos.x,pos.y);
+  }
+  banner(room.name,'ROOM '+String(room.id+1).padStart(2,'0')+' / '+String(G.rooms.length).padStart(2,'0'));
   sound(620,.13,'triangle',.025);
 }
 function clearRoom(){
@@ -114,34 +152,44 @@ function clearRoom(){
   if(room.cleared||!room.spawned)return;
   room.cleared=true;
   G.score+=Math.round(150*G.floor*comboMultiplier(G.combo));
-  if(room.kind==='guardian'){
+  if(room.kind==='dragon'){
+    G.dragonRemains=G.dragonLastPos||{x:480,y:315};
+    G.enemyBullets=[];G.specialShots=[];G.beams=[];
+    G.combo=0;G.comboTimer=0;
+    banner('王命已成。','THE DRAGON HAS FALLEN',2.4);
+    N.play('dragonFallen',()=>toast('调查巨龙身旁发光的遗物。',4));
+  }else if(room.kind==='guardian'){
     G.portal={x:480,y:208};room.portal=G.portal;
-    banner(G.floor===3?'地牢已净化':'通往下一层的传送门','FLOOR CLEARED',2.4);
-    toast('靠近传送门按 E '+(G.floor===3?'完成远征':'进入下一层'),2.9);
+    banner(G.floor===3?'前往最后的王庭':'通往下一层的传送门','FLOOR CLEARED',2.4);
+    toast('靠近传送门按 E '+(G.floor===3?'进入龙眠王庭':'进入下一层'),2.9);
   }else{
     banner('房间净化 · 大门开启','ROOM CLEARED',1.8);
     toast('通路已解锁！直接走入发光门即可进入下一房间',2.4);
-    if(room.id===1)toast('北侧有隐藏宝库，东侧继续主线',3);
+    if(room.kind==='combat'&&G.rooms.some(r=>r.kind==='treasure'&&!r.visited))
+      toast('别忘了探索支路，也许藏着古老的圣物。',2.5);
   }
   sound(790,.19,'sine',.055);updateHud();
 }
 function nextFloor(){
-  if(G.floor>=3){setState('won');return;}
-  G.floor++;G.rooms=createRooms();G.roomIndex=0;G.wave=1;
+  if(G.floor>=4)return;
+  const last=G.floor;
+  G.floor++;G.rooms=createRooms(G.seed,G.floor);G.roomIndex=0;G.wave=1;
   G.enemies=[];G.pickups=[];G.chest=null;G.portal=null;
   G.combo=0;G.comboTimer=0;
   G.player.shield=Math.min(G.player.maxShield,G.player.shield+27);
   G.player.hp=Math.min(G.player.maxHp,G.player.hp+32);G.player.invuln=1;
   enterRoom(0);
-  banner('抵达第 '+G.floor+' 层','THE DEPTHS AWAIT',2.2);
+  if(G.floor<=3&&last<=2)N.play('floor'+last);
+  banner(G.floor===4?'龙眠王庭':'抵达第 '+G.floor+' 层','THE DEPTHS AWAIT',2.2);
   sound(550,.28,'sine',.045);updateHud();
 }
 function setState(type){
   mode=type;const paused=type==='paused',win=type==='won';
-  dom.state.classList.remove('hidden');$('stateIcon').textContent=paused?'Ⅱ':win?'✦':'✕';
-  $('stateLabel').textContent=paused?'GAME PAUSED':win?'THE DUNGEON IS CLEARED':'ADVENTURE ENDED';
-  $('stateTitle').textContent=paused?'冒险暂歇':win?'远征成功！':'勇者倒下了';
-  $('stateDescription').textContent=paused?'休息一下，前方还有未知的挑战。':win?'你踏遍三层地牢，成为真正的地牢勇者。':'这次的故事结束了，但冒险永不落幕。';
+  dom.state.classList.remove('hidden');$('stateIcon').textContent=paused?'Ⅱ':win?'◇':'✕';
+  dom.state.querySelector('.state-card').classList.toggle('ending-card',win);
+  $('stateLabel').textContent=paused?'GAME PAUSED':win?'THE FORGOTTEN OATH':'ADVENTURE ENDED';
+  $('stateTitle').textContent=paused?'冒险暂歇':win?'……我认出你了。':'勇者倒下了';
+  $('stateDescription').textContent=paused?'休息一下，记忆仍在等待你。':win?'那枚银色戒指还在。他终于记得，她却再也无法回应。':'下一次迷宫会改变，但遗失的记忆还在。';
   $('resumeBtn').style.display=paused?'':'none';
   $('resultFloor').textContent=String(G.floor).padStart(2,'0');
   $('resultKills').textContent=String(G.kills).padStart(2,'0');
@@ -149,7 +197,7 @@ function setState(type){
   $('resultCombo').textContent='×'+G.bestCombo;
   $('statusText').textContent=paused?'GAME PAUSED':win?'EXPEDITION COMPLETE':'GAME OVER';
   dom.interact.classList.remove('show');
-  if(!paused)sound(win?850:105,.5,win?'sine':'sawtooth',.07);
+  if(!paused)sound(win?320:105,.65,win?'sine':'sawtooth',.039);
 }
 function togglePause(){
   if(mode==='playing'){setState('paused');mouse.down=false;touch.fire=false;}
@@ -163,8 +211,8 @@ function updateHud(){
   $('hpText').textContent=Math.ceil(Math.max(0,p.hp))+' / '+p.maxHp;
   $('shieldText').textContent=Math.ceil(Math.max(0,p.shield))+' / '+p.maxShield;
   $('playerLevel').textContent='LV. '+String(G.floor).padStart(2,'0');
-  $('floorLabel').textContent='第 '+String(G.floor).padStart(2,'0')+' 层';
-  $('waveLabel').textContent=room.name+' · '+(G.roomIndex+1)+'/5';
+  $('floorLabel').textContent=G.floor===4?'终章': '第 '+String(G.floor).padStart(2,'0')+' 层';
+  $('waveLabel').textContent=room.name+' · '+(G.roomIndex+1)+'/'+G.rooms.length;
   $('coinText').textContent=String(G.coins).padStart(3,'0');
   const active=G.combo>1&&G.comboTimer>0;
   $('comboHud').classList.toggle('active',active);
@@ -186,14 +234,16 @@ function spawnEnemy(type,x,y){
   const normal={
     slime:{hp:43,speed:66,r:15,damage:13,color:'#9be4ba'},
     bat:{hp:29,speed:130,r:13,damage:10,color:'#b2a0e8'},
-    shooter:{hp:51,speed:74,r:16,damage:9,color:'#a894e6'}
+    shooter:{hp:51,speed:74,r:16,damage:9,color:'#a894e6'},
+    seal:{hp:155,speed:0,r:24,damage:0,color:'#eaa3be'}
   };
   const boss=isBoss(type),stats=boss?BOSS_DATA[type]:normal[type];
   if(!stats)throw new Error('Unknown enemy '+type);
   const hp=boss?bossHp(type):Math.round(stats.hp*(1+(G.floor-1)*.22));
   G.enemies.push({...stats,type,x,y,hp,maxHp:hp,shootCd:boss?2.1:random(.4,2),
     attackCd:random(.5,1.3),phase:random(0,TAU),hit:0,dir:0,moving:false,dead:false,
-    windup:0,teleportCd:3.6,summonCd:8,shotCount:0});
+    windup:0,teleportCd:3.6,summonCd:8,shotCount:0,dragonStage:1,
+    stage2Shown:false,stage3Shown:false});
 }
 
 function blocked(x,y,r=13){
@@ -390,6 +440,28 @@ function enemyShot(e,angle,speed,color,r=6,damage=13,curve=0){
 }
 function enemyFire(e){
   const a=Math.atan2(G.player.y-e.y,G.player.x-e.x);
+  if(e.type==='dragon'){
+    const stage=e.dragonStage;
+    if(stage===1){
+      // Dragonflame: a broad, telegraphed cone, then a delayed tail wave.
+      for(let i=-4;i<=4;i++)enemyShot(e,a+i*.135,205,'#f3a07d',8,15);
+      particle(e.x,e.y-42,'#f9ac90',26,185);
+      sound(170,.28,'sawtooth',.065);
+    }else if(stage===2){
+      // The dragon hesitates. The curse releases slow tears of silver flame.
+      for(let i=-3;i<=3;i++)enemyShot(e,a+i*.18,188,'#c1caff',7,13,i*.035);
+      for(let i=0;i<8;i++)enemyShot(e,TAU*i/8+G.time*.4,154,'#e9b6df',7,12);
+      particle(e.x,e.y-35,'#bdcde7',23,150);
+      sound(300,.23,'sine',.055);
+    }else{
+      // The king's curse yanks the dragon into an uncontrolled spiral.
+      for(let i=0;i<15;i++)enemyShot(e,TAU*i/15+G.time*.7,170,'#fa929f',8,14,.08);
+      for(let i=-3;i<=3;i++)enemyShot(e,a+i*.12,240,'#e1a6fd',7,17);
+      particle(e.x,e.y-30,'#ec8baf',29,200);
+      sound(125,.3,'sawtooth',.075);
+    }
+    return;
+  }
   if(e.type==='boss_fire'){
     // Magma giant: slow circular nova interwoven with a three-shot aimed burst.
     const n=14,offset=G.time*.58;
@@ -420,6 +492,21 @@ function enemyFire(e){
   }
 }
 function updateBossAI(e,dt,dist,a){
+  if(e.type==='dragon'){
+    e.x=Math.max(155,Math.min(675,e.x));
+    e.y=Math.max(226,Math.min(365,e.y));
+    if(e.warning){
+      e.windup-=dt;
+      if(e.windup<=0){
+        enemyFire(e);e.warning=false;e.windup=0;
+        e.shootCd=e.dragonStage===3?1.48:e.dragonStage===2?2.32:2.1;
+      }
+    }else if(e.shootCd<=0&&dist<730){
+      e.warning=true;e.windup=e.dragonStage===3?.55:.83;
+      e.shootCd=e.windup;particle(e.x,e.y-40,e.color,12,100);
+    }
+    return;
+  }
   e.teleportCd-=dt;e.summonCd-=dt;
   if(e.type==='boss_arcane'&&e.teleportCd<=0){
     particle(e.x,e.y-22,'#b5dafa',30,180);
@@ -461,13 +548,33 @@ function damagePlayer(amount){
   if(p.hp<=0){p.hp=0;setState('dead');}
 }
 function damageEnemy(e,dmg,hitAngle=0){
-  if(e.dead)return;
+  if(e.dead||mode!=='playing')return;
+  if(e.type==='dragon'){
+    const max=e.maxHp;
+    if(e.dragonStage===3&&G.enemies.some(x=>x.type==='seal'&&!x.dead))
+      dmg=Math.max(1,Math.round(dmg*.12));
+    if(e.dragonStage===1&&e.hp-dmg<=max*.65){
+      e.hp=Math.floor(max*.65);e.dragonStage=2;e.stage2Shown=true;e.shootCd=2.4;
+      G.enemyBullets=[];G.shake=14;
+      N.play('dragonHesitates',()=>toast('它似乎不愿继续战斗……',2.4));
+      return;
+    }
+    if(e.dragonStage===2&&e.hp-dmg<=max*.30){
+      e.hp=Math.floor(max*.30);e.dragonStage=3;e.stage3Shown=true;e.shootCd=2;
+      G.enemyBullets=[];G.shake=18;
+      for(const pos of [[292,284],[670,283],[484,448]])spawnEnemy('seal',...pos);
+      N.play('dragonSeal',()=>toast('打碎 3 枚王之诅咒水晶！',3.5));
+      return;
+    }
+  }
   e.hp-=dmg;e.hit=.13;
   particle(e.x+random(-8,8),e.y-13,e.color,isBoss(e.type)?8:4,90);
   e.x=clamp(e.x+Math.cos(hitAngle)*2,70,890);
   e.y=clamp(e.y+Math.sin(hitAngle)*2,100,515);
   if(e.hp>0)return;
-  e.dead=true;G.kills++;G.shake=Math.min(12,G.shake+2);
+  e.dead=true;
+  if(e.type==='dragon')G.dragonLastPos={x:clamp(e.x,170,650),y:clamp(e.y,235,360)};
+  G.kills++;G.shake=Math.min(12,G.shake+2);
   const hero=G.player;
   if(hero.vampireHeal>0)hero.hp=Math.min(hero.maxHp,hero.hp+hero.vampireHeal);
   G.combo=G.comboTimer>0?G.combo+1:1;
@@ -480,7 +587,16 @@ function damageEnemy(e,dmg,hitAngle=0){
     sound(580+G.combo*18,.2,'sine',.03);
   }
   particle(e.x,e.y,e.color,isBoss(e.type)?44:18,isBoss(e.type)?260:165);
-  if(isBoss(e.type)){
+  if(e.type==='dragon'){
+    G.pickups=[];G.enemyBullets=[];G.bullets=[];G.beams=[];G.specialShots=[];
+    particle(e.x,e.y-32,'#d5bac9',80,95);
+    sound(117,.7,'sine',.05);
+  }else if(e.type==='seal'){
+    particle(e.x,e.y,'#f3c5db',35,180);
+    sound(870,.31,'triangle',.06);
+    if(!G.enemies.some(s=>s.type==='seal'&&!s.dead))
+      toast('王之锁链已全部断裂！',2.4);
+  }else if(isBoss(e.type)){
     for(let i=0;i<14+G.floor*3;i++)addPickup('coin',e.x+random(-85,85),e.y+random(-70,70));
     addPickup('heart',e.x+60,e.y+10);
     grantWeapon(BOSS_WEAPONS[G.floor-1]);
@@ -570,6 +686,20 @@ function melee(){
 function interact(){
   if(mode!=='playing')return;
   const p=G.player;
+  if(G.dragonRemains){
+    const d=G.dragonRemains;
+    const dress={x:d.x+126,y:d.y+65},ring={x:d.x+84,y:d.y+30};
+    if(!G.clues.dress&&distance(p,dress)<86){
+      G.clues.dress=true;
+      N.play('dress',()=>toast('另一道微弱的光，在龙的前爪上闪烁。',3.3));
+      return;
+    }
+    if(G.clues.dress&&!G.clues.ring&&distance(p,ring)<84){
+      G.clues.ring=true;
+      N.play('ring',()=>N.play('revelation',()=>setState('won')));
+      return;
+    }
+  }
   if(G.chest&&!G.chest.opened&&distance(p,G.chest)<76){
     showRelicChoice();return;
   }
@@ -614,12 +744,18 @@ function update(dt){
     e.hit=Math.max(0,e.hit-dt);e.shootCd-=dt;e.attackCd-=dt;
     const dist=distance(e,p),a=Math.atan2(p.y-e.y,p.x-e.x);e.dir=a;
     let dx=Math.cos(a),dy=Math.sin(a);
+    if(e.type==='seal'){
+      e.moving=false;continue;
+    }
     if(e.type==='shooter'){
       if(dist<175){dx*=-1;dy*=-1;}
       else if(dist<285){dx=Math.cos(a+Math.PI/2)*.45;dy=Math.sin(a+Math.PI/2)*.45;}
     }
     if(isBoss(e.type)){
-      if(e.type==='boss_arcane'){
+      if(e.type==='dragon'){
+        dx=Math.cos(a)*.45+Math.sin(G.time*.7)*.25;
+        dy=Math.sin(a)*.32+Math.cos(G.time*.6)*.14;
+      }else if(e.type==='boss_arcane'){
         dx=dist<190?-Math.cos(a):Math.cos(a)*.55;
         dy=dist<190?-Math.sin(a):Math.sin(a)*.55;
       }else{
@@ -678,16 +814,24 @@ function update(dt){
     s.x+=s.vx*dt;s.y+=s.vy*dt;s.vx*=Math.pow(.13,dt);s.vy*=Math.pow(.13,dt);
   }
   let hint='';
-  if(g.chest&&!g.chest.opened&&distance(p,g.chest)<75)hint='开启神秘宝箱';
-  else if(g.portal&&distance(p,g.portal)<81)hint=g.floor===3?'完成远征':'进入下一层';
-  else for(const [dir,id] of Object.entries(currentRoom().exits)){
+  if(g.dragonRemains){
+    const d=g.dragonRemains;
+    const nearDress=distance(p,{x:d.x+126,y:d.y+65})<93;
+    const nearRing=distance(p,{x:d.x+84,y:d.y+30})<93;
+    if(!g.clues.dress&&nearDress)hint='调查残破的浅蓝礼服';
+    else if(g.clues.dress&&!g.clues.ring&&nearRing)hint='调查巨龙爪上的戒指';
+  }
+  if(!hint&&g.chest&&!g.chest.opened&&distance(p,g.chest)<75)hint='开启神秘宝箱';
+  else if(!hint&&g.portal&&distance(p,g.portal)<81)hint=g.floor===3?'前往龙眠王庭':'进入下一层';
+  else if(!hint)for(const [dir,id] of Object.entries(currentRoom().exits)){
     if(distance(p,DOORS[dir])<90){
       hint=currentRoom().cleared?'走入发光门 → '+g.rooms[id].name:'消灭敌人后大门开启';
       break;
     }
   }
   dom.interact.classList.toggle('show',Boolean(hint));
-  if(hint)dom.interact.innerHTML=(g.chest&&!g.chest.opened||g.portal?'按 <kbd>E</kbd> ':'')+hint;
+  if(hint)dom.interact.innerHTML=(g.dragonRemains||g.chest&&!g.chest.opened||g.portal?
+    '按 <kbd>E</kbd> ':'')+hint;
   if(Math.floor(g.time*10)!==Math.floor((g.time-dt)*10))updateHud();
 }
 
@@ -721,34 +865,44 @@ function drawDoors(){
   }
 }
 function drawMinimap(){
-  const nodes=G.rooms,x=754,y=508;
+  const nodes=G.rooms,x=746,y=436,w=202,h=152;
   ctx.save();
-  ctx.fillStyle='#07151ce8';ctx.fillRect(x,y,192,81);
-  ctx.strokeStyle='#54787e';ctx.lineWidth=1;ctx.strokeRect(x+.5,y+.5,191,80);
-  ctx.fillStyle='#b6c8c0';ctx.font='bold 10px sans-serif';ctx.textBaseline='middle';
-  ctx.textAlign='left';ctx.fillText('探索地图',x+11,y+12);
+  ctx.fillStyle='#07151ce8';ctx.fillRect(x,y,w,h);
+  ctx.strokeStyle='#54787e';ctx.lineWidth=1;ctx.strokeRect(x+.5,y+.5,w-1,h-1);
+  ctx.fillStyle='#c5d9cc';ctx.font='bold 11px sans-serif';ctx.textBaseline='middle';
+  ctx.textAlign='left';ctx.fillText(G.floor===4?'龙眠王庭':'迷宫探索',x+12,y+13);
   ctx.font='9px monospace';ctx.fillStyle='#e9d397';ctx.textAlign='right';
-  ctx.fillText(G.roomIndex+1+' / '+nodes.length,x+180,y+12);
-  const center=r=>({x:x+29+r.x*42,y:y+33+r.y*32});
+  ctx.fillText('SEED '+G.runSeed,x+w-10,y+14);
+  const minX=Math.min(...nodes.map(n=>n.x)),maxX=Math.max(...nodes.map(n=>n.x));
+  const minY=Math.min(...nodes.map(n=>n.y)),maxY=Math.max(...nodes.map(n=>n.y));
+  const step=Math.min(27,143/Math.max(1,maxX-minX),84/Math.max(1,maxY-minY));
+  const originX=x+(w-(maxX-minX)*step)/2;
+  const originY=y+39+(88-(maxY-minY)*step)/2;
+  const center=r=>({x:originX+(r.x-minX)*step,y:originY+(r.y-minY)*step});
   const seen=new Set();
   for(const n of nodes){
-    for(const next of Object.values(n.exits)){
-      const key=[n.id,next].sort().join('-');if(seen.has(key))continue;seen.add(key);
-      const a=center(n),b=center(nodes[next]);
-      ctx.strokeStyle=n.visited&&nodes[next].visited?'#8dd1b3':'#5a797e';
+    for(const otherId of Object.values(n.exits)){
+      const key=[n.id,otherId].sort((a,b)=>a-b).join('-');
+      if(seen.has(key))continue;seen.add(key);
+      const a=center(n),b=center(nodes[otherId]);
+      ctx.strokeStyle=n.visited&&nodes[otherId].visited?'#a0ddc8':'#546e73';
       ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
     }
   }
   for(const n of nodes){
-    const c=center(n),isCurrent=n.id===G.roomIndex;
-    ctx.fillStyle=isCurrent?'#f0d18e':n.cleared?'#65be9e':n.visited?'#acaaa0':'#273a43';
-    ctx.fillRect(c.x-13,c.y-9,26,18);
-    ctx.strokeStyle=isCurrent?'#fff4cc':n.visited?'#9db8ac':'#5c6e74';
-    ctx.lineWidth=isCurrent?2:1;ctx.strokeRect(c.x-13,c.y-9,26,18);
-    ctx.textBaseline='middle';ctx.textAlign='center';
-    ctx.font='bold 11px monospace';ctx.fillStyle=isCurrent?'#17313a':n.visited?'#0e2630':'#73888d';
-    ctx.fillText(n.kind==='treasure'?'◆':n.kind==='guardian'?'✦':String(n.id+1),c.x,c.y+1);
+    const c=center(n),current=n.id===G.roomIndex;
+    ctx.fillStyle=current?'#efd397':n.cleared?'#74c5a6':n.visited?'#8da4a1':'#263d46';
+    const d=Math.max(12,Math.min(19,step*.73));
+    ctx.fillRect(c.x-d/2,c.y-d/2,d,d);
+    ctx.strokeStyle=current?'#fef0c8':n.visited?'#9bbab2':'#62777d';
+    ctx.lineWidth=current?2:1;ctx.strokeRect(c.x-d/2,c.y-d/2,d,d);
+    ctx.textAlign='center';ctx.font='bold 12px monospace';
+    ctx.textBaseline='middle';ctx.fillStyle=current?'#102d39':n.visited?'#173541':'#54717b';
+    ctx.fillText(n.kind==='treasure'?'◆':n.kind==='memory'?'◈':n.kind==='event'?'?':
+      n.kind==='guardian'?'✦':n.kind==='dragon'?'♜':'·',c.x,c.y+1);
   }
+  ctx.fillStyle='#8db5aa';ctx.font='9px monospace';ctx.textAlign='left';
+  ctx.fillText(nodes.filter(n=>n.visited).length+'/'+nodes.length+' ROOMS · ◈ MEMORY',x+10,y+h-10);
   ctx.restore();
 }
 function drawMeleeSlash(){
@@ -836,12 +990,14 @@ function drawBossTelegraphs(){
   ctx.save();
   for(const e of G.enemies){
     if(!isBoss(e.type)||e.dead)continue;
-    const c=e.type==='boss_fire'?'#f2a269':e.type==='boss_arcane'?'#96ddff':'#f1a6bb';
+    const c=e.type==='boss_fire'?'#f2a269':e.type==='boss_arcane'?'#96ddff':
+      e.type==='dragon'?'#eeb7d2':'#f1a6bb';
     const pulse=Math.sin(G.time*3)*.5+.5;
     ctx.strokeStyle=c;ctx.globalAlpha=.28+pulse*.17;ctx.lineWidth=2.5;
     ctx.beginPath();ctx.ellipse(e.x,e.y+5,e.r+19,e.r*.41,0,0,TAU);ctx.stroke();
     if(!e.warning)continue;
-    const progress=1-Math.max(0,e.windup)/.68;
+    const progress=clamp(1-Math.max(0,e.windup)/
+      (e.type==='dragon'?(e.dragonStage===3?.55:.83):.68),0,1);
     ctx.globalAlpha=.15+.28*progress;
     ctx.fillStyle=c;ctx.beginPath();ctx.arc(e.x,e.y-12,e.r+31+progress*17,0,TAU);ctx.fill();
     ctx.globalAlpha=.93;ctx.lineWidth=4;ctx.strokeStyle=c;
@@ -898,6 +1054,23 @@ function render(){
   if(G.shake>0&&mode==='playing')ctx.translate(random(-G.shake,G.shake),random(-G.shake,G.shake));
   drawWorld(ctx,G.map,G.time);
   drawDoors();
+  if(G.dragonRemains){
+    drawDragon(ctx,G.dragonRemains.x,G.dragonRemains.y,G.time,false,true,.92);
+    drawDragonClues(ctx,G.dragonRemains,G.time,G.clues.dress);
+    ctx.save();
+    const dress={x:G.dragonRemains.x+126,y:G.dragonRemains.y+65};
+    const target=G.clues.dress?{x:G.dragonRemains.x+84,y:G.dragonRemains.y+30}:dress;
+    if(!G.clues.ring){
+      ctx.fillStyle='#f6e5b0';ctx.textAlign='center';ctx.font='bold 12px sans-serif';
+      ctx.fillText(G.clues.dress?'调查戒指 [E]':'调查残破礼服 [E]',target.x,target.y-43);
+    }
+    ctx.restore();
+  }
+  if(['memory','event'].includes(currentRoom().kind)){
+    ctx.save();ctx.textAlign='center';ctx.font='bold 12px sans-serif';
+    ctx.fillStyle='#b7e8de';ctx.fillText(currentRoom().kind==='memory'?'◈ 记忆封印':'✧ 失落的文字',480,246);
+    ctx.restore();
+  }
   drawBossTelegraphs();
   if(G.portal)drawPortal(ctx,G.portal.x,G.portal.y,G.time);
   if(G.chest)drawChest(ctx,G.chest.x,G.chest.y,G.time,G.chest.opened);
@@ -919,8 +1092,19 @@ function render(){
         drawGun(ctx,p.x+Math.cos(p.dir)*3,p.y-3,p.dir,p.weapons[p.slot],G.time,p.recoil);
       }
     }else{
-      drawActor(ctx,e.type,e.x,e.y,G.time+e.phase,e.dir,e.hit,1,e.moving);
-      if(e.hp<e.maxHp&&!isBoss(e.type))drawBar(e.x-17,e.y-e.r-35,34,e.hp/e.maxHp,e.color,4);
+      if(e.type==='dragon')drawDragon(ctx,e.x,e.y,G.time,true,false,1,e.dragonStage);
+      else if(e.type==='seal'){
+        ctx.save();ctx.translate(e.x,e.y-9);
+        ctx.shadowBlur=19;ctx.shadowColor='#e68da5';
+        ctx.fillStyle='#744a78';
+        ctx.beginPath();ctx.moveTo(0,-29);ctx.lineTo(24,0);ctx.lineTo(0,30);ctx.lineTo(-24,0);ctx.closePath();ctx.fill();
+        ctx.fillStyle='#f6bdd0';
+        ctx.beginPath();ctx.moveTo(0,-20);ctx.lineTo(14,0);ctx.lineTo(0,20);ctx.lineTo(-14,0);ctx.closePath();ctx.fill();
+        ctx.fillStyle='#fff3f0';ctx.fillRect(-3,-8,6,16);ctx.restore();
+        drawBar(e.x-23,e.y-49,46,e.hp/e.maxHp,'#f4afcf',5);
+      }else drawActor(ctx,e.type,e.x,e.y,G.time+e.phase,e.dir,e.hit,1,e.moving);
+      if(e.hp<e.maxHp&&!isBoss(e.type)&&e.type!=='seal')
+        drawBar(e.x-17,e.y-e.r-35,34,e.hp/e.maxHp,e.color,4);
     }
   }
   drawMeleeSlash();
@@ -969,6 +1153,17 @@ window.addEventListener('keydown',e=>{
       e.preventDefault();chooseRelic(G.relicOptions[Number(key)-1]?.id);
     }
     return;
+  }
+  if(mode==='story'){
+    if(!e.repeat&&['enter',' ','arrowright'].includes(key)){e.preventDefault();N.advance();}
+    return;
+  }
+  if(mode==='archive'){
+    if(!e.repeat&&(key==='m'||key==='escape')){e.preventDefault();N.closeArchive();}
+    return;
+  }
+  if(!e.repeat&&key==='m'&&['playing','paused','menu'].includes(mode)){
+    e.preventDefault();N.openArchive();return;
   }
   if(key==='escape'&& !dom.help.classList.contains('hidden')){dom.help.classList.add('hidden');return;}
   if(key==='p'||key==='escape'){if(mode==='playing'||mode==='paused')togglePause();return;}
@@ -1026,6 +1221,11 @@ window.__pixelDungeon={
   get combo(){return G.combo;},get multiplier(){return comboMultiplier(G.combo);},
   get bestCombo(){return G.bestCombo;},get meleeStage(){return G.player.meleeStage;},
   get x(){return G.player.x;},get y(){return G.player.y;},
+  get seed(){return G.runSeed;},get map(){return G.rooms.map(r=>({id:r.id,x:r.x,y:r.y,
+    kind:r.kind,name:r.name,exits:{...r.exits},mapSeed:r.mapSeed,visited:r.visited,cleared:r.cleared}));},
+  get story(){return N.activeId;},get memories(){return N.collected;},
+  get dragonRemains(){return G.dragonRemains&&{...G.dragonRemains};},
+  get clues(){return {...G.clues};},get dragonStage(){return G.enemies.find(e=>e.type==='dragon')?.dragonStage||null},
   get weapon(){return G.player.weapons[G.player.slot];},get weapons(){return [...G.player.weapons];},
   get relics(){return [...G.player.relics];},get relicOptions(){return G.relicOptions.map(it=>it.id);},
   get stats(){const p=G.player;return {maxHp:p.maxHp,maxShield:p.maxShield,speed:p.speed,power:p.power,
@@ -1039,7 +1239,8 @@ window.__pixelDungeon={
 if(['localhost','127.0.0.1'].includes(location.hostname)&&new URLSearchParams(location.search).has('e2e')){
   window.__pixelDungeonTest={
     eliminateOne(){
-      const e=G.enemies.find(e=>!e.dead);
+      if(mode!=='playing')return false;
+      const e=G.enemies.find(e=>!e.dead&&e.type!=='dragon');
       if(!e)return false;
       damageEnemy(e,e.hp+1000);
       G.enemies=G.enemies.filter(e=>!e.dead);currentRoom().enemies=G.enemies;
@@ -1047,9 +1248,49 @@ if(['localhost','127.0.0.1'].includes(location.hostname)&&new URLSearchParams(lo
       return true;
     },
     clearRoom(){
-      while(this.eliminateOne()){}
-      if(!currentRoom().cleared)clearRoom();
+      if(mode!=='playing')return false;
+      let attempts=0;
+      while(this.eliminateOne()&&attempts++<60){}
+      if(G.enemies.length===0&&!currentRoom().cleared)clearRoom();
+      return currentRoom().cleared;
     },
+    advanceStory(){return N.advance();},
+    closeArchive(){return N.closeArchive();},
+    openArchive(){return N.openArchive();},
+    travel(next){
+      if(mode!=='playing'||!currentRoom().cleared||
+        !areNeighbors(G.rooms,G.roomIndex,next))return false;
+      return enterRoom(next,G.roomIndex);
+    },
+    bossDamageTo(percent){
+      const e=G.enemies.find(e=>e.type==='dragon'&&!e.dead);
+      if(!e||mode!=='playing')return null;
+      const target=Math.ceil(e.maxHp*percent);
+      const attack=Math.max(1,e.hp-target+1);
+      damageEnemy(e,attack);return {hp:e.hp,stage:e.dragonStage,scene:N.activeId};
+    },
+    destroySeals(){
+      if(mode!=='playing')return false;
+      for(const e of G.enemies.filter(e=>e.type==='seal'&&!e.dead))damageEnemy(e,e.hp+1000);
+      G.enemies=G.enemies.filter(e=>!e.dead);currentRoom().enemies=G.enemies;
+      return true;
+    },
+    finishDragon(){
+      if(mode!=='playing')return false;
+      this.destroySeals();
+      const e=G.enemies.find(e=>e.type==='dragon'&&!e.dead);
+      if(!e||e.dragonStage!==3)return false;
+      damageEnemy(e,e.hp+1000);
+      G.enemies=G.enemies.filter(e=>!e.dead);currentRoom().enemies=G.enemies;
+      if(!G.enemies.length)clearRoom();
+      return !!G.dragonRemains;
+    },
+    inspectDress(){if(!G.dragonRemains)return false;
+      G.player.x=G.dragonRemains.x+126;G.player.y=G.dragonRemains.y+65;
+      interact();return G.clues.dress;},
+    inspectRing(){if(!G.dragonRemains)return false;
+      G.player.x=G.dragonRemains.x+84;G.player.y=G.dragonRemains.y+30;
+      interact();return G.clues.ring;},
     teleport(x,y){G.player.x=x;G.player.y=y;},
     interact(){interact();},
     slash(){melee();},
@@ -1070,6 +1311,9 @@ if(['localhost','127.0.0.1'].includes(location.hostname)&&new URLSearchParams(lo
     setHp(hp){G.player.hp=Math.max(0,Math.min(G.player.maxHp,hp));updateHud();},
     state(){return {floor:G.floor,room:G.roomIndex,combo:G.combo,score:G.score,
       enemies:G.enemies.length,chest:G.chest&&{...G.chest},portal:!!G.portal,
+      kinds:G.enemies.map(e=>e.type),dragonRemains:G.dragonRemains,clues:{...G.clues},
+      boss:G.enemies.filter(e=>isBoss(e.type)).map(e=>({type:e.type,hp:e.hp,maxHp:e.maxHp,stage:e.dragonStage})),
+      scene:N.activeId,mode,memories:N.collected,
       meleeStage:G.player.meleeStage};}
   };
 }
