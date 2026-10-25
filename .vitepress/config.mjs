@@ -60,6 +60,7 @@ export default defineConfig({
           { text: '忒修斯之船', link: '/notions/theseus-protocol' },
           { text: '彼得潘的乐园', link: '/notions/peter-pan-paradise' },
           { text: '我的系统后宫', link: '/notions/my-os-orgy' },
+          { text: 'Astra注图灵《智能机器》', link: '/notions/turing-heretics' },
         ]
       },
       { 
